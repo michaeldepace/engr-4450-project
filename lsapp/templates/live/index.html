@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block header %}
+home stream page
+{% endblock %}
+{% block content %}
+home live page where you can watch people
+
+
+<div style="background-color: red;">
+    video container - portrait
+</div>
+
+<a href="{{ url_for('live.broadcast') }}">test link</a>
+
+{% endblock %}

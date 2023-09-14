@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    </head>
+    <body>
+        <h1><a href="/">Live Stream App</a></h1>
+        <nav style="box-sizing:border-box;border: 2px dashed blue;">
+            <!-- <ul style="display: flex; ">
+            {% if g.user %}
+                <li><span>{{ g.user['usr_login'] }}</span>
+                <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
+            {% else %}
+                <li><a href="{{ url_for('auth.register') }}">Register</a>
+                <li><a href="{{ url_for('auth.login') }}">Log In</a>
+            {% endif %} 
+            </ul> -->
+            {% if g.user %}
+                <span>{{ g.user['usr_login'] }}</span>
+                <a href="{{ url_for('auth.logout') }}">Log Out</a>
+            {% else %}
+                <a href="{{ url_for('auth.register') }}">Register</a>
+                <a href="{{ url_for('auth.login') }}">Log In</a>
+            {% endif %} 
+        </nav>
+        <section class="content" style="border: 2px dashed red;">
+            <header>{% block header %}{% endblock %}</header>
+            {% for message in get_flashed_messages() %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
+            <main style="width: 50%;">
+                <p>Main Content</p>
+                {% block content %}{% endblock %}
+            </main>
+        </section>
+    </body>
+</html>
