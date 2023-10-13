@@ -25,3 +25,16 @@ section.content > main{
     margin: 1rem auto;
     border: 1px solid orange;
 }
+
+div.vid-container{
+    display: flex;
+    justify-content: space-around;
+}
+
+div.vid-block{
+    color: red;
+    flex-grow: initial;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

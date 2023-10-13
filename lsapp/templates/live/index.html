@@ -3,13 +3,48 @@
 home stream page
 {% endblock %}
 {% block content %}
-home live page where you can watch people
 
 
-<div style="background-color: red;">
-    video container - portrait
+<div style="display:flex; flex-direction:row; width: 10rem;">
+    <div style="border: 2px dashed green;">
+        <h1>Users</h1>
+        <ul>
+            {% for key, val in users.items() %}
+            <li>
+                <div style="border: 2px solid black;">
+                    <input type="hidden" name="sid" value={{ key }}>
+                    <img alt="userIcon"/>
+                    <p>{{ val[0] }}</p>
+                    <p>score</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div class="vid-container" style="flex-grow: 1;">
+        <div class="vid-block">
+            <div>
+                <img alt="userIcon"/>
+                <h1>Username</h1>
+            </div>
+            <video height="320" controls>
+                <source src="" type="video/mp4">
+            </video>
+            <button>Like this Video</button>
+        </div>
+        <div class="vid-block">
+            <div>
+                <img alt="userIcon"/>
+                <h1>Username</h1>
+            </div>  
+            <video height="320" controls>
+                <source src="" type="video/mp4">
+            </video>
+            <button>Like this Video</button>
+        </div>
+    </div>
 </div>
 
-<a href="{{ url_for('live.broadcast') }}">test link</a>
 
 {% endblock %}

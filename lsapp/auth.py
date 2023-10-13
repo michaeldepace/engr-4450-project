@@ -80,7 +80,7 @@ def login():
         if len(usr_data) > 0:
             user = db.table("users").select("*").eq("usr_login", username).execute().data[0]
 
-        print(user)
+        #print(user)
 
         if user is None:
             error = 'Incorrect username.'

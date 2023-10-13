@@ -4,20 +4,66 @@
         <title>{% block title %}{% endblock %}</title>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
         <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
+        <script type="text/javascript" charset="utf-8">
+            var socket;
+            $(document).ready(function(){
+                socket = io.connect('http://localhost:5000');//#io.connect('http://' + document.domain + ':' + location.port);
+                
+                socket.on('connect', function() {
+                    socket.emit('joined', {});
+                });
+
+                socket.on('after connect', function(msg) {
+                    console.log('After connect', msg);
+                    socket.emit('test', "this is a test message");
+                });
+                
+
+                /*socket.on('status', function(data) {
+                    
+                    $('#chat').val($('#chat').val() + '<' + data.msg + '>\n');
+                    $('#chat').scrollTop($('#chat')[0].scrollHeight);
+                
+                });
+
+
+                socket.on('message', function(data) {
+                    $('#chat').val($('#chat').val() + data.msg + '\n');
+                    $('#chat').scrollTop($('#chat')[0].scrollHeight);
+                });
+                */
+
+                $(window).on("beforeunload", function() { 
+                    return;
+                    //socket.emit('left', {});
+                    //alert('test');
+                    //confirm("test");
+                });
+                window.addEventListener("beforeunload", function(event) {
+                    socket.emit('left', {});
+                    console.log('test');
+                    return "test";
+                    //event.preventDefault();
+                    //event.returnValue = null; //"Any text"; //true; //false;
+                    //return null; //"Any text"; //true; //false;
+                  });
+            });
+
+            
+            
+            var socket = io();
+            socket.on('connect', function() {
+                socket.emit('my event', {data: 'I\'m connected!'});
+            });
+        </script>
     </head>
     <body>
-        <h1><a href="/">Live Stream App</a></h1>
+        
         <nav style="box-sizing:border-box;border: 2px dashed blue;">
-            <!-- <ul style="display: flex; ">
-            {% if g.user %}
-                <li><span>{{ g.user['usr_login'] }}</span>
-                <li><a href="{{ url_for('auth.logout') }}">Log Out</a>
-            {% else %}
-                <li><a href="{{ url_for('auth.register') }}">Register</a>
-                <li><a href="{{ url_for('auth.login') }}">Log In</a>
-            {% endif %} 
-            </ul> -->
+            <h1><a href="/">Live Stream App</a></h1>
+            <a href="{{url_for('live.submit')}}">Upload video</a>
             {% if g.user %}
                 <span>{{ g.user['usr_login'] }}</span>
                 <a href="{{ url_for('auth.logout') }}">Log Out</a>
@@ -27,12 +73,12 @@
             {% endif %} 
         </nav>
         <section class="content" style="border: 2px dashed red;">
-            <header>{% block header %}{% endblock %}</header>
+            <header><h1 style="text-align: center;">{% block header %}{% endblock %}</h1></header>
             {% for message in get_flashed_messages() %}
                 <div class="flash">{{ message }}</div>
+                <p>Current Room: {{ room }}</p>
             {% endfor %}
-            <main style="width: 50%;">
-                <p>Main Content</p>
+            <main>
                 {% block content %}{% endblock %}
             </main>
         </section>

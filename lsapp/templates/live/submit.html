@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block header %}
+    test
+{% endblock %}
+{% block content %}
+<form method="POST" enctype="multipart/form-data" action="">
+    <input type="file" name="file" accept=".mp4"/>
+    <input type="submit"/>
+</form>
+
+{{url_for('live.submit')}}
+
+add upload progress bar
+{% endblock %}
