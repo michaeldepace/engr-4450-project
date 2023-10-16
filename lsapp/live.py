@@ -28,8 +28,15 @@ def index():
     # for key in session:
     #     print(key, session[key])
 
+    # print(session.keys())
+    #print(session['user_id'])
+
     # url_query = request.args.to_dict()
     return render_template('live/index.html', users=clients)
+
+
+
+
 
 @bp.route('/live/submission', methods=["GET", "POST"])
 #@cross_origin
@@ -48,14 +55,6 @@ def submit():
         return redirect(url_for('live.submit'))
     else:
         return render_template('live/submit.html')
-
-
-@socketio.on('test')
-def test(msg):
-    return
-    #print("test")
-    #print(msg)
-    #print(lsapp.clients)
 
 
 

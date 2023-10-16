@@ -6,19 +6,15 @@
         <script src="{{ url_for('static', filename='js/main.js') }}"></script>
         <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ==" crossorigin="anonymous"></script>
+        
         <script type="text/javascript" charset="utf-8">
-            var socket;
-            $(document).ready(function(){
-                socket = io.connect('http://localhost:5000');//#io.connect('http://' + document.domain + ':' + location.port);
+            //var socket;
+            //$(document).ready(function(){
+                //socket = io.connect('http://localhost:5000');//#io.connect('http://' + document.domain + ':' + location.port);
                 
-                socket.on('connect', function() {
-                    socket.emit('joined', {});
-                });
-
-                socket.on('after connect', function(msg) {
-                    console.log('After connect', msg);
-                    socket.emit('test', "this is a test message");
-                });
+                //socket.on('connect', function() {
+                //    socket.emit('joined', {});
+                //});
                 
 
                 /*socket.on('status', function(data) {
@@ -34,38 +30,18 @@
                     $('#chat').scrollTop($('#chat')[0].scrollHeight);
                 });
                 */
-
-                $(window).on("beforeunload", function() { 
-                    return;
-                    //socket.emit('left', {});
-                    //alert('test');
-                    //confirm("test");
-                });
-                window.addEventListener("beforeunload", function(event) {
-                    socket.emit('left', {});
-                    console.log('test');
-                    return "test";
-                    //event.preventDefault();
-                    //event.returnValue = null; //"Any text"; //true; //false;
-                    //return null; //"Any text"; //true; //false;
-                  });
-            });
-
-            
-            
-            var socket = io();
-            socket.on('connect', function() {
-                socket.emit('my event', {data: 'I\'m connected!'});
-            });
+            //});
         </script>
     </head>
     <body>
-        
+        <input type="hidden" id="user_id_val" name="user_id" value={{ session['user_id'] }}>
+        <input type="hidden" id="user_name_val" name="user_name" value={{ g.user['usr_login'] }}>
+
         <nav style="box-sizing:border-box;border: 2px dashed blue;">
             <h1><a href="/">Live Stream App</a></h1>
             <a href="{{url_for('live.submit')}}">Upload video</a>
             {% if g.user %}
-                <span>{{ g.user['usr_login'] }}</span>
+                <span>{{ g.user['usr_login'] }} - {{ session['user_id']}}</span>
                 <a href="{{ url_for('auth.logout') }}">Log Out</a>
             {% else %}
                 <a href="{{ url_for('auth.register') }}">Register</a>
@@ -76,7 +52,6 @@
             <header><h1 style="text-align: center;">{% block header %}{% endblock %}</h1></header>
             {% for message in get_flashed_messages() %}
                 <div class="flash">{{ message }}</div>
-                <p>Current Room: {{ room }}</p>
             {% endfor %}
             <main>
                 {% block content %}{% endblock %}
