@@ -1,1 +1,3 @@
 supabase-py
+boto-3
+a bunch of flask stuff

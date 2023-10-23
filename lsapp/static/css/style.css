@@ -28,6 +28,7 @@ section.content > main{
 
 div.vid-container{
     display: flex;
+    flex-direction: column;
     justify-content: space-around;
 }
 
@@ -37,4 +38,9 @@ div.vid-block{
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+div.userlist{
+    width: 20%;
+    border: 2px dashed green;
 }

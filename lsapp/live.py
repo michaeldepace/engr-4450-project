@@ -1,16 +1,22 @@
 from flask import (Blueprint, flash, g, redirect, render_template, request, url_for, current_app, session)
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
-from flask_cors import CORS, cross_origin
+#from flask_cors import CORS, cross_origin
 import os
 from lsapp.auth import login_required
 from lsapp.db import get_db
+from lsapp.s3 import connect_to_s3
+
 from flask_socketio import SocketIO
 
-from flask import session, Response
+from flask import session#, Response
 from flask_socketio import emit, join_room, leave_room
 from lsapp import socketio, clients
 
+from datetime import datetime   
+
+from werkzeug.utils import secure_filename
+import boto3
 
 #from lsapp.ls_code.camera import Camera
 
@@ -32,7 +38,11 @@ def index():
     #print(session['user_id'])
 
     # url_query = request.args.to_dict()
-    return render_template('live/index.html', users=clients)
+
+    vids = db.table("submissions").select("*").execute().data
+    print(vids)
+
+    return render_template('live/index.html', users=clients, videos=vids)
 
 
 
@@ -43,18 +53,33 @@ def index():
 @login_required
 
 def submit():
+    db = get_db()
+    s3 = connect_to_s3()
     if request.method == "POST":
         uploaded_video = request.files['file']
         filename = secure_filename(uploaded_video.filename)
         if filename != '':
             file_ext = os.path.splitext(filename)[1]
-            if file_ext not in current_app.config["UPLOAD_EXTENSIONS"]:
-                abort(400)
-            uploaded_video.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+            #if file_ext not in current_app.config["UPLOAD_EXTENSIONS"]:
+            #    abort(400)
             
+
+            #uploaded_video.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+
+            timestamp = datetime.now().strftime("%d%m%Y%H%M%S%f")
+            user_id = g.user["usr_id"]
+            file_name = f'vid-{user_id}-{timestamp}.mp4'
+            try:
+                s3.meta.client.upload_fileobj(uploaded_video, 'engr-4450-fp', file_name)
+                db.table("submissions").insert({"uploader_id": user_id, "video_s3_path": file_name}).execute()
+            except Exception as e:
+                print(e) #do something
+
         return redirect(url_for('live.submit'))
     else:
         return render_template('live/submit.html')
+
+
 
 
 

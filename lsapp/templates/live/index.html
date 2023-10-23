@@ -26,7 +26,7 @@ home stream page
                 <div style="border: 2px solid black;">  \
                     <input type="hidden" name="sid" value={{ key }}>    \
                     <!-- <img alt="userIcon"/> -->  \
-                    <p>'+users[key][0]+'</p> \
+                    <!--<p>'+users[key][0]+'</p>--> \
                     <p>'+users[key][1]+'</p> \
                     <!-- <p>score</p> -->   \
                 </div>  \
@@ -42,7 +42,8 @@ home stream page
 </script>
 
 <div style="display:flex; flex-direction:row;">
-    <div style="border: 2px dashed green;">
+    
+    <div class="userlist" style="">
         <h1>Users</h1>
         <ul id="userlist">
             {% for key, val in users.items() %}
@@ -50,36 +51,40 @@ home stream page
                 <div style="border: 2px solid black;">
                     <input type="hidden" name="sid" value={{ key }}>
                     <img alt="userIcon"/>
-                    <p>{{ val[0] }}</p>
+                    <!-- <p>{{ val[0] }}</p> -->
                     <p>{{ val[1] }}</p>
-                    <p>score</p>
+                    <!-- <p>score</p> -->
                 </div>
             </li>
             {% endfor %}
         </ul>
     </div>
     
-    <div class="vid-container" style="flex-grow: 1;">
+    <div class="vid-container" style="flex-grow: 1; ">
+        {% for video in videos: %}
         <div class="vid-block">
             <div style="border: 2px solid green; display:flex;">
                 <img alt="userIcon"/>
-                <h1>Username</h1>
+                <h1>Username - {{ video['uploader_id'] }}</h1>
             </div>
             <video height="320" controls>
-                <source src="" type="video/mp4">
+                <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video['video_s3_path'] }}" type="video/mp4">
             </video>
             <button>Like this Video</button>
         </div>
-        <div class="vid-block">
+        {% endfor %}
+
+        
+        <!-- <div class="vid-block">
             <div style="border: 2px solid green; display:flex;">
                 <img alt="userIcon"/>
                 <h1>Username</h1>
             </div>  
             <video height="320" controls>
-                <source src="" type="video/mp4">
+                <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/DadCameoHPE.mp4" type="video/mp4">
             </video>
             <button>Like this Video</button>
-        </div>
+        </div> -->
     </div>
 </div>
 
