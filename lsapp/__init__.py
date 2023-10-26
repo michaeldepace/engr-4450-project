@@ -38,8 +38,8 @@ def create_app(debug=True, main=True):
        SECRET_KEY='dev', #neccessary to run app
        DB_API_URL = os.getenv("DB_API_URL"), #local secret management wtih .env file
        DB_API_KEY = os.getenv("DB_API_KEY"), #local secret management wtih .env file
-       #AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY"), #local secret management wtih .env file
-       #AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY") #local secret management wtih .env file
+       AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY"), #local secret management wtih .env file
+       AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY") #local secret management wtih .env file
     )
 
     app.config["UPLOAD_FOLDER"] = 'video_upload' #get rid of this

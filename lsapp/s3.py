@@ -9,8 +9,8 @@ ALLOWED_EXTENSIONS = {'mp4'}
 def connect_to_s3():
     s3 = boto3.resource(
         "s3",
-        aws_access_key_id="AKIAXUIQEC55GXXH2H4K",#current_app.config['AWS_ACCESS_KEY'],
-        aws_secret_access_key=r"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",#current_app.config['AWS_SECRET_KEY']
+        aws_access_key_id=current_app.config['AWS_ACCESS_KEY'],
+        aws_secret_access_key=current_app.config['AWS_SECRET_KEY']
     )
     return s3
 
