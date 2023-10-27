@@ -1,4 +1,4 @@
-from flask import (Blueprint, flash, g, redirect, render_template, request, url_for, current_app, session)
+from flask import (Blueprint, flash, g, redirect, render_template, request, Response, url_for, current_app, session)
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 #from flask_cors import CORS, cross_origin
@@ -6,47 +6,26 @@ import os
 from lsapp.auth import login_required
 from lsapp.db import get_db
 from lsapp.s3 import connect_to_s3
-
 from flask_socketio import SocketIO
-
 from flask import session#, Response
 from flask_socketio import emit, join_room, leave_room
 from lsapp import socketio, clients
-
 from datetime import datetime   
-
 from werkzeug.utils import secure_filename
 import boto3
-
-#from lsapp.ls_code.camera import Camera
 
 bp = Blueprint('live', __name__)
 
 
+#handle missing request id client dictionary key pop error 
+
 @bp.route('/')
 @login_required
-#@cross_origin
 def index():
     db = get_db()
-    
-    session["room"] = 1
-
-    # for key in session:
-    #     print(key, session[key])
-
-    # print(session.keys())
-    #print(session['user_id'])
-
-    # url_query = request.args.to_dict()
-
-    vids = db.table("submissions").select("*").execute().data
-    print(vids)
+    vids = db.table("submissions").select("*").order('num_likes', desc=True).execute().data
 
     return render_template('live/index.html', users=clients, videos=vids)
-
-
-
-
 
 @bp.route('/live/submission', methods=["GET", "POST"])
 #@cross_origin
@@ -55,6 +34,7 @@ def index():
 def submit():
     db = get_db()
     s3 = connect_to_s3()
+
     if request.method == "POST":
         uploaded_video = request.files['file']
         filename = secure_filename(uploaded_video.filename)
@@ -79,9 +59,16 @@ def submit():
     else:
         return render_template('live/submit.html')
 
+@bp.route('/like/<video_id>', methods=["POST"])
+@login_required
+def like_video(video_id):
+    db = get_db()
+    likes = db.table("submissions").select('num_likes').eq('vid_id', video_id).execute().data[0]['num_likes']
+    db.table("submissions").update({'num_likes': likes + 1}).eq('vid_id', video_id).execute()
+    return ('', 204)
 
 
-
+"""Old code remote later """
 
 # @bp.route('/live/broadcast')
 # @login_required

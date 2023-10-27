@@ -3,8 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import functools
 from lsapp.db import get_db
 
-#connect this to the template html files and url routes
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint('auth', __name__, url_prefix='/auth') #connect this script to the html template files and http url routes
 
 #create a wrapper for route functions that require you to be logged in before accessing
 def login_required(view):

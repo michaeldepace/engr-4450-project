@@ -34,16 +34,14 @@ home stream page
         }
         return true;
     }
-
-    //socket.on('client_connected', function(msg) {
-    //    console.log("a client connected", msg);
-        //$("#userlist").append(msg);
-    //});    
+    
+    
+    //every 30 seconds send a request via socket io to have your like counts refreshed 
 </script>
 
 <div style="display:flex; flex-direction:row;">
     
-    <div class="userlist" style="">
+    <div class="userlist">
         <h1>Users</h1>
         <ul id="userlist">
             {% for key, val in users.items() %}
@@ -66,11 +64,16 @@ home stream page
             <div style="border: 2px solid green; display:flex;">
                 <img alt="userIcon"/>
                 <h1>Username - {{ video['uploader_id'] }}</h1>
+                <p>Likes: {{video['num_likes']}}</p>
             </div>
             <video height="320" controls>
                 <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video['video_s3_path'] }}" type="video/mp4">
             </video>
-            <button>Like this Video</button>
+            <form action="{{url_for('live.like_video', video_id=video['vid_id'])}}" method="post">
+                <input type="hidden" value="{{ video['vid_id'] }}"/>
+                <button type="submit">Like this Video</button>
+            </form>
+            <!-- convert this to either ajax or socketio -->
         </div>
         {% endfor %}
 
