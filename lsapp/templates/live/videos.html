@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block header %}
+home stream page
+{% endblock %}
+{% block content %}
+
+<script type="text/javascript">
+    var socket = io.connect('http://localhost:5000');
+    socket.on('connect', function(msg) {
+        user_id = $('#user_id_val').val();
+        user_name = $('#user_name_val').val();
+        socket.emit('client_connecting', { "user_id": user_id, "user_name": user_name });
+    });
+    socket.on('update_clients', function(msg) {
+        console.log("a client connected", msg);
+        update_clients_display(msg['data']);
+        //$("#userlist").append(msg);
+    });
+
+    function update_clients_display(users){
+        $("#userlist").empty();
+        for(const key in users){
+            console.log(key, users[key], users[key][0]);//users[key][0], user[key][1]);
+            $("#userlist").append(
+            '<li>   \
+                <div style="border: 2px solid black;">  \
+                    <input type="hidden" name="sid" value={{ key }}>    \
+                    <!-- <img alt="userIcon"/> -->  \
+                    <!--<p>'+users[key][0]+'</p>--> \
+                    <p>'+users[key][1]+'</p> \
+                    <!-- <p>score</p> -->   \
+                </div>  \
+            </li>'); //users[key][0]
+        }
+        return true;
+    }
+    
+    
+    //every 30 seconds send a request via socket io to have your like counts refreshed 
+</script>
+
+<div style="display:flex; flex-direction:row;">
+    
+    <div class="userlist">
+        <h1>Users</h1>
+        <ul id="userlist">
+            {% for key, val in users.items() %}
+            <li>
+                <div style="border: 2px solid black;">
+                    <input type="hidden" name="sid" value={{ key }}>
+                    <img alt="userIcon"/>
+                    <!-- <p>{{ val[0] }}</p> -->
+                    <p>{{ val[1] }}</p>
+                    <!-- <p>score</p> -->
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div class="vid-container" style="flex-grow: 1; ">
+        {% for video in videos: %}
+        <div class="vid-block">
+            <div style="border: 2px solid green; display:flex;">
+                <img alt="userIcon"/>
+                <h1>Username - {{ video['uploader_id'] }}</h1>
+                <p>Likes: {{video['num_likes']}}</p>
+            </div>
+            <video height="320" controls>
+                <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video['video_s3_path'] }}" type="video/mp4">
+            </video>
+            <form action="{{url_for('live.like_video', video_id=video['vid_id'])}}" method="post">
+                <input type="hidden" value="{{ video['vid_id'] }}"/>
+                <button type="submit">Like this Video</button>
+            </form>
+            <!-- convert this to either ajax or socketio -->
+        </div>
+        {% endfor %}
+
+        
+        <!-- <div class="vid-block">
+            <div style="border: 2px solid green; display:flex;">
+                <img alt="userIcon"/>
+                <h1>Username</h1>
+            </div>  
+            <video height="320" controls>
+                <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/DadCameoHPE.mp4" type="video/mp4">
+            </video>
+            <button>Like this Video</button>
+        </div> -->
+    </div>
+</div>
+
+
+{% endblock %}

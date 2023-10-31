@@ -23,9 +23,10 @@ bp = Blueprint('live', __name__)
 @login_required
 def index():
     db = get_db()
-    vids = db.table("submissions").select("*").order('num_likes', desc=True).execute().data
+    leaderboard_vids = db.table("submissions").select("*").order("num_likes", desc=True).limit(5).execute().data
+    #vids = db.table("submissions").select("*").order('num_likes', desc=True).execute().data
 
-    return render_template('live/index.html', users=clients, videos=vids)
+    return render_template('live/index.html', users=clients, videos=leaderboard_vids)
 
 @bp.route('/live/submission', methods=["GET", "POST"])
 #@cross_origin
@@ -68,7 +69,16 @@ def like_video(video_id):
     return ('', 204)
 
 
-"""Old code remote later """
+@bp.route('/live/videos')
+@login_required
+def all_videos():
+    db = get_db()
+    vids = db.table("submissions").select("*").order('num_likes', desc=True).execute().data
+
+    return render_template('live/videos.html', users=clients, videos=vids)
+
+
+"""Old code remove later """
 
 # @bp.route('/live/broadcast')
 # @login_required
