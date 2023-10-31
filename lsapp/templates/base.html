@@ -19,6 +19,7 @@
                     <span>{{ g.user['usr_login'] }} - {{ session['user_id']}}</span>
                 </div>
                 <a href="{{url_for('live.submit')}}">Upload video</a>
+                <a href="{{url_for('live.leaderboard')}}">Leaderboard</a>
                 <a href="{{ url_for('auth.logout') }}">Log Out</a>
             {% else %}
                 <a href="{{ url_for('auth.register') }}">Register</a>

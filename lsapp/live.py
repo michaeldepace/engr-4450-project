@@ -79,7 +79,18 @@ def submit():
     else:
         return render_template('live/submit.html')
 
+@bp.route('/leaderboard', methods =["GET"])
+@login_required
 
+def leaderboard():
+    db = get_db()
+    if request.method == "GET":
+        leaderboard_table = db.table("submissions").select("*").order("num_likes", desc=True).limit(5).execute().data
+        # .limit(5) can be changed to whatever we want the leaderboard to be
+        # I suspect this can also be used to make pagination for the homepage?
+        # leaderboard.html is also a bar for bar copy of index at the moment but i wanted that to work better for base.html
+        # we can talk about best practice later though
+        return render_template('live/leaderboard.html', users=clients, videos=leaderboard_table)
 
 
 
