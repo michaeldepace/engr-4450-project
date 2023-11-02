@@ -2,6 +2,8 @@
 {% block header %}
 home stream page
 {% endblock %}
+
+
 {% block content %}
 
 <script type="text/javascript">
@@ -63,31 +65,18 @@ home stream page
         <div class="vid-block">
             <div style="border: 2px solid green; display:flex;">
                 <img alt="userIcon"/>
-                <h1>Username - {{ video['uploader_id'] }}</h1>
+                <p>Username - {{ video['uploader_id'] }}</p>
                 <p>Likes: {{video['num_likes']}}</p>
+                <form action="{{url_for('live.like_video', video_id=video['vid_id'])}}" method="post">
+                    <input type="hidden" value="{{ video['vid_id'] }}"/>
+                    <button type="submit">Like this Video</button>
+                </form> <!-- convert this to either ajax or socketio -->
             </div>
             <video height="320" controls>
                 <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video['video_s3_path'] }}" type="video/mp4">
             </video>
-            <form action="{{url_for('live.like_video', video_id=video['vid_id'])}}" method="post">
-                <input type="hidden" value="{{ video['vid_id'] }}"/>
-                <button type="submit">Like this Video</button>
-            </form>
-            <!-- convert this to either ajax or socketio -->
         </div>
         {% endfor %}
-
-        
-        <!-- <div class="vid-block">
-            <div style="border: 2px solid green; display:flex;">
-                <img alt="userIcon"/>
-                <h1>Username</h1>
-            </div>  
-            <video height="320" controls>
-                <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/DadCameoHPE.mp4" type="video/mp4">
-            </video>
-            <button>Like this Video</button>
-        </div> -->
     </div>
 </div>
 

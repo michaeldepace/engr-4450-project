@@ -1,14 +1,14 @@
 from flask import (Blueprint, flash, g, redirect, render_template, request, Response, url_for, current_app, session)
-from werkzeug.exceptions import abort
+#from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 #from flask_cors import CORS, cross_origin
 import os
 from lsapp.auth import login_required
 from lsapp.db import get_db
 from lsapp.s3 import connect_to_s3
-from flask_socketio import SocketIO
-from flask import session#, Response
-from flask_socketio import emit, join_room, leave_room
+#from flask_socketio import SocketIO
+#from flask import session#, Response
+#from flask_socketio import emit, join_room, leave_room
 from lsapp import socketio, clients
 from datetime import datetime   
 from werkzeug.utils import secure_filename

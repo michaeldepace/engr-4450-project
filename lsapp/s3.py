@@ -2,8 +2,6 @@ from flask import current_app, g
 from werkzeug.utils import secure_filename
 import boto3
 
-
-
 ALLOWED_EXTENSIONS = {'mp4'}
 
 def connect_to_s3():
@@ -13,7 +11,6 @@ def connect_to_s3():
         aws_secret_access_key=current_app.config['AWS_SECRET_KEY']
     )
     return s3
-
 
 def allowed_file(filename):
     return '.' in filename and \
