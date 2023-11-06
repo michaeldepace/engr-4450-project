@@ -82,9 +82,9 @@ def unlike_video(video_id):
         db.table("video_likes").delete().eq('vid_id', video_id).eq('user_id', g.user["usr_id"]).execute()
     return redirect(url_for('live.index'))
 
-@bp.route('/tst')
-def test_rpc():
-    db = get_db()
-    data = db.rpc('get_video_data', None).execute()
-    print(data)
-    return ''
+# @bp.route('/tst') #used for figuring out how to create database functions
+# def test_rpc():
+#     db = get_db()
+#     data = db.rpc('get_video_data', None).execute()
+#     print(data)
+#     return ''
