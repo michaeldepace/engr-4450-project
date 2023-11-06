@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "84daced863368d744050ada21623fcd7870700376b5689f3da579aa72ae9cac9"
+            "sha256": "02f971d817f3678e907630b08c744b94069d0cdd96072662c128cdef7c27ba1d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -153,6 +153,22 @@
             ],
             "version": "==2.1.0"
         },
+        "dnspython": {
+            "hashes": [
+                "sha256:57c6fbaaeaaf39c891292012060beb141791735dbb4004798328fc2c467402d8",
+                "sha256:8dcfae8c7460a2f84b4072e26f1c9f4101ca20c071649cb7c34e8b6a93d58984"
+            ],
+            "markers": "python_version >= '3.8' and python_version < '4.0'",
+            "version": "==2.4.2"
+        },
+        "eventlet": {
+            "hashes": [
+                "sha256:722803e7eadff295347539da363d68ae155b8b26ae6a634474d0a920be73cfda",
+                "sha256:e43b9ae05ba4bb477a10307699c9aff7ff86121b2640f9184d29059f5a687df8"
+            ],
+            "index": "pypi",
+            "version": "==0.33.3"
+        },
         "flask": {
             "hashes": [
                 "sha256:21128f47e4e3b9d597a3e8521a329bf56909b690fcc3fa3e477725aa81367638",
@@ -214,14 +230,6 @@
             ],
             "markers": "python_version >= '3.8'",
             "version": "==23.9.1"
-        },
-        "gevent-websocket": {
-            "hashes": [
-                "sha256:17b67d91282f8f4c973eba0551183fc84f56f1c90c8f6b6b30256f31f66f5242",
-                "sha256:7eaef32968290c9121f7c35b973e2cc302ffb076d018c9068d2f5ca8b2d85fb0"
-            ],
-            "index": "pypi",
-            "version": "==0.10.1"
         },
         "gotrue": {
             "hashes": [
@@ -291,7 +299,7 @@
                 "sha256:f89e21afe925fcfa655965ca8ea10f24773a1791400989ff32f467badfe4a064",
                 "sha256:fa24255ae3c0ab67e613556375a4341af04a084bd58764731972bcbc8baeba36"
             ],
-            "markers": "python_version >= '3.11' and platform_python_implementation == 'CPython'",
+            "markers": "python_version >= '3.7'",
             "version": "==3.0.1"
         },
         "gunicorn": {

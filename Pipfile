@@ -10,7 +10,7 @@ python-dotenv = "*"
 supabase = "==2.0.3"
 boto3 = "*"
 gunicorn = "*"
-gevent-websocket = "*"
+eventlet = "*"
 
 [dev-packages]
 
