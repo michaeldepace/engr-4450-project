@@ -1,5 +1,0 @@
-create a new venv
-flask 
-flask socketio
-supabase
-boto3
