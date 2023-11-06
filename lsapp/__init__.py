@@ -52,7 +52,7 @@ def create_app(debug=True, main=True):
 
     if main:
         #socketio.init_app(app, cors_allowed_origins=['http://127.0.0.1:5000'], manage_session=False)
-        socketio.init_app(app, cors_allowed_origins=['http://127.0.0.1:5000', 'https://xp98kbcd-5000.use.devtunnels.ms/'], manage_session=False)
+        socketio.init_app(app, cors_allowed_origins=['http://127.0.0.1:5000', 'https://engr-4450-fp-74ee1ca5fd3f.herokuapp.com/'], manage_session=False)
     else:
         socketio.init_app(None, async_mode='threading', manage_session=False)
 
