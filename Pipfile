@@ -10,6 +10,7 @@ python-dotenv = "*"
 supabase = "==2.0.3"
 boto3 = "*"
 eventlet = "*"
+gunicorn = "*"
 
 [dev-packages]
 
