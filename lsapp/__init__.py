@@ -27,6 +27,7 @@ def create_app(debug=True, main=True):
 
     #DEPLOYMENT CODE - GITHUB SECRETS 
     app.config.from_mapping(
+        SECRET_KEY='abracadaniel', #neccessary to run app
         DB_API_URL = os.environ["DB_API_URL"], #supabase api url gh secret
         DB_API_KEY = os.environ["DB_API_KEY"], #supabase api key gh secret
         #AWS_ACCESS_KEY = os.environ["AWS_ACCESS_KEY"], #aws access key gh secret
