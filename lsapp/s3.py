@@ -53,12 +53,3 @@ def upload_file_to_s3(file, bucket_name, acl="public-read"):
 #             file.filename = secure_filename(file.filename)
 #             output = upload_file_to_s3(file, app.config["S3_BUCKET"])
 #             return str(output)  # Will be the link to the video in the bucket
-#     return '''
-#     <!doctype html>
-#     <title>Upload new File</title>
-#     <h1>Upload new File</h1>
-#     <form method=post enctype=multipart/form-data>
-#       <input type=file name=file>
-#       <input type=submit value=Upload>
-#     </form>
-#     '''

@@ -6,7 +6,7 @@ import boto3
 from lsapp.auth import login_required
 from lsapp.db import get_db
 from lsapp.s3 import connect_to_s3
-from lsapp import socketio, clients
+# from lsapp import socketio, clients
 
 bp = Blueprint('live', __name__)
 
@@ -22,7 +22,7 @@ def index():
     liked_video_ids = []
     for item in like_data:
         liked_video_ids.append(item['vid_id'])
-    return render_template('live/index.html', users=clients, videos=leaderboard_vids, likes=liked_video_ids)
+    return render_template('live/index.html', videos=leaderboard_vids, likes=liked_video_ids)
 
 @bp.route('/videos')
 @login_required
@@ -33,7 +33,7 @@ def all_videos():
     liked_video_ids = []
     for item in like_data:
         liked_video_ids.append(item['vid_id'])
-    return render_template('live/videos.html', users=clients, videos=vids, likes=liked_video_ids)
+    return render_template('live/videos.html', videos=vids, likes=liked_video_ids)
 
 @bp.route('/submission', methods=["GET", "POST"])
 @login_required
@@ -81,10 +81,3 @@ def unlike_video(video_id):
     if likes != 0:
         db.table("video_likes").delete().eq('vid_id', video_id).eq('user_id', g.user["usr_id"]).execute()
     return redirect(url_for('live.index'))
-
-# @bp.route('/tst') #used for figuring out how to create database functions
-# def test_rpc():
-#     db = get_db()
-#     data = db.rpc('get_video_data', None).execute()
-#     print(data)
-#     return ''
