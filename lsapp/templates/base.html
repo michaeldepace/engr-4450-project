@@ -10,6 +10,78 @@
     <body>
         <input type="hidden" id="user_id_val" name="user_id" value={{ session['user_id'] }}>
         <input type="hidden" id="user_name_val" name="user_name" value={{ g.user['usr_login'] }}>
+        <script type="text/javascript">
+            //var socket = io.connect('http://localhost:5000');
+            //var socket = io.connect('https://engr-4450-fp-74ee1ca5fd3f.herokuapp.com/', {transports: ["polling"]});
+            var socket = io.connect('https://engr-4450-fp-74ee1ca5fd3f.herokuapp.com/');
+            //var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+            socket.on('connect', function(msg) {
+                user_id = $('#user_id_val').val();
+                user_name = $('#user_name_val').val();
+                socket.emit('client_connecting', { "user_id": user_id, "user_name": user_name });
+            });
+            socket.on('update_clients', function(msg) {
+                console.log("a client connected", msg);
+                update_clients_display(msg['data']);
+                //$("#userlist").append(msg);
+            });
+        
+            function update_clients_display(users){
+                $("#userlist").empty();
+                for(const key in users){
+                    console.log(key, users[key], users[key][0]);//users[key][0], user[key][1]);
+                    $("#userlist").append(
+                    '<li>   \
+                        <div style="border: 2px solid black;">  \
+                            <input type="hidden" name="sid" value={{ key }}>    \
+                            <!-- <img alt="userIcon"/> -->  \
+                            <!--<p>'+users[key][0]+'</p>--> \
+                            <p>'+users[key][1]+'</p> \
+                            <!-- <p>score</p> -->   \
+                        </div>  \
+                    </li>'); //users[key][0]
+                }
+                return true;
+            }
+            
+            
+            //every 30 seconds send a request via socket io to have your like counts refreshed 
+        </script>
+
+        <!-- <script type="text/javascript">
+    var socket = io.connect('http://localhost:5000');
+    socket.on('connect', function(msg) {
+        user_id = $('#user_id_val').val();
+        user_name = $('#user_name_val').val();
+        socket.emit('client_connecting', { "user_id": user_id, "user_name": user_name });
+    });
+    socket.on('update_clients', function(msg) {
+        console.log("a client connected", msg);
+        update_clients_display(msg['data']);
+        //$("#userlist").append(msg);
+    });
+
+    function update_clients_display(users){
+        $("#userlist").empty();
+        for(const key in users){
+            console.log(key, users[key], users[key][0]);//users[key][0], user[key][1]);
+            $("#userlist").append(
+            '<li>   \
+                <div style="border: 2px solid black;">  \
+                    <input type="hidden" name="sid" value={{ key }}>    \
+                    <img alt="userIcon"/>   \
+                    <p>'+users[key][0]+'</p> \
+                    <p>'+users[key][1]+'</p> \
+                    <p>score</p>   \
+                </div>  \
+            </li>'); //users[key][0]
+        }
+        return true;
+    }
+        //every 30 seconds send a request via socket io to have your like counts refreshed 
+    </script>
+ -->
 
         <nav style="box-sizing:border-box;border: 2px dashed blue;">
             <h1><a href="/">Live Stream App</a></h1>

@@ -26,21 +26,22 @@ def create_app(debug=True, main=True):
     app = Flask(__name__)
 
     #DEPLOYMENT CODE - GITHUB SECRETS 
-    # app.config.from_mapping(
-    #     DB_API_URL = os.environ["DB_API_URL"], #supabase api url gh secret
-    #     DB_API_KEY = os.environ["DB_API_KEY"], #supabase api key gh secret
-    #     AWS_ACCESS_KEY = os.environ["AWS_ACCESS_KEY"], #aws access key gh secret
-    #     AWS_SECRET_KEY = os.environ["AWS_SECRET_KEY"] #aws secret key gh secret
-    # )
+    app.config.from_mapping(
+        SECRET_KEY='abracadaniel', #neccessary to run app
+        DB_API_URL = os.environ["DB_API_URL"], #supabase api url gh secret
+        DB_API_KEY = os.environ["DB_API_KEY"], #supabase api key gh secret
+        #AWS_ACCESS_KEY = os.environ["AWS_ACCESS_KEY"], #aws access key gh secret
+        #AWS_SECRET_KEY = os.environ["AWS_SECRET_KEY"] #aws secret key gh secret
+    )
 
     #DEVELOPMENT CODE - LOCAL SECRETS
-    app.config.from_mapping(
-       SECRET_KEY='dev', #neccessary to run app
-       DB_API_URL = os.getenv("DB_API_URL"), #local secret management wtih .env file
-       DB_API_KEY = os.getenv("DB_API_KEY"), #local secret management wtih .env file
-       AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY"), #local secret management wtih .env file
-       AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY") #local secret management wtih .env file
-    )
+    # app.config.from_mapping(
+    #    SECRET_KEY='dev', #neccessary to run app
+    #    DB_API_URL = os.getenv("DB_API_URL"), #local secret management wtih .env file
+    #    DB_API_KEY = os.getenv("DB_API_KEY"), #local secret management wtih .env file
+    #    AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY"), #local secret management wtih .env file
+    #    AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY") #local secret management wtih .env file
+    # )
 
     app.config["UPLOAD_FOLDER"] = 'video_upload' #get rid of this
     app.config['UPLOAD_EXTENSIONS'] = ['.mp4']
@@ -51,7 +52,7 @@ def create_app(debug=True, main=True):
 
     if main:
         #socketio.init_app(app, cors_allowed_origins=['http://127.0.0.1:5000'], manage_session=False)
-        socketio.init_app(app, cors_allowed_origins=['http://127.0.0.1:5000', 'https://xp98kbcd-5000.use.devtunnels.ms/'], manage_session=False)
+        socketio.init_app(app, cors_allowed_origins=['http://127.0.0.1:5000', 'https://engr-4450-fp-74ee1ca5fd3f.herokuapp.com/'], manage_session=False)
     else:
         socketio.init_app(None, async_mode='threading', manage_session=False)
 
