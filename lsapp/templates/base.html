@@ -12,7 +12,8 @@
         <input type="hidden" id="user_name_val" name="user_name" value={{ g.user['usr_login'] }}>
         <script type="text/javascript">
             //var socket = io.connect('http://localhost:5000');
-            var socket = io.connect('https://engr-4450-fp-74ee1ca5fd3f.herokuapp.com/', {transports: ["websocket"]});
+            //var socket = io.connect('https://engr-4450-fp-74ee1ca5fd3f.herokuapp.com/', {transports: ["polling"]});
+            var socket = io.connect('https://engr-4450-fp-74ee1ca5fd3f.herokuapp.com/');
             //var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
             socket.on('connect', function(msg) {
