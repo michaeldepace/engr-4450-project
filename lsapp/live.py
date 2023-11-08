@@ -29,11 +29,23 @@ def index():
 def all_videos():
     db = get_db()
     vids = db.table("video_like_data").select("*").order('created_at', desc=True).execute().data
+    
     like_data = db.table("video_likes").select("*").eq('user_id', g.user["usr_id"]).execute().data
     liked_video_ids = []
     for item in like_data:
         liked_video_ids.append(item['vid_id'])
-    return render_template('live/videos.html', videos=vids, likes=liked_video_ids)
+
+    comment_data = db.table("comments").select("*").execute().data
+    comment_dictionary = {}
+    for record in vids:
+        vid_id = record["vid_id"]
+        comment_dictionary[vid_id] = []
+
+    for record in comment_data:
+        comment_vid_id = record["video_id"]
+        comment_dictionary[comment_vid_id].append(record)
+
+    return render_template('live/videos.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary)
 
 @bp.route('/submission', methods=["GET", "POST"])
 @login_required
@@ -80,4 +92,14 @@ def unlike_video(video_id):
     likes = db.table("video_likes").select('*', count='exact').eq('vid_id', video_id).eq('user_id', g.user["usr_id"]).execute().count
     if likes != 0:
         db.table("video_likes").delete().eq('vid_id', video_id).eq('user_id', g.user["usr_id"]).execute()
+    return redirect(url_for('live.index'))
+
+@bp.route('/video/comment', methods=["POST"])
+@login_required
+def submit_video_comment():
+    db = get_db()
+    user_id = request.form['user_id']
+    vid_id = request.form['vid_id']
+    comment_text = request.form['comment_text']
+    db.table("comments").insert({"user_id": user_id, "video_id": vid_id, "comment_text":comment_text }).execute()
     return redirect(url_for('live.index'))
