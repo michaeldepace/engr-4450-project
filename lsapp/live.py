@@ -76,6 +76,13 @@ def submit():
     else:
         return render_template('live/submit.html')
 
+@bp.route('/profile')
+@login_required
+def profile():
+    return render_template('live/profile.html')
+
+
+
 @bp.route('/like/<video_id>', methods=["POST"])
 @login_required
 def like_video(video_id):
