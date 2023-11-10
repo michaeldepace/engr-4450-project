@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block header %}
-Leaderboard
+Leaderboard <i class="bi bi-trophy"></i>
 {% endblock %}
 
 {% block content %}
-<div style="display:flex; flex-direction:row;">    
+<div style="display:flex; flex-direction:row;">
     <div class="vid-container" style="flex-grow: 1;">
         {% for video in videos: %}
         <div class="vid-block">

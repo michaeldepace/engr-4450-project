@@ -28,14 +28,14 @@ def index():
 @login_required
 def all_videos():
     db = get_db()
-    vids = db.table("video_like_data").select("*").order('created_at', desc=True).execute().data
+    vids = db.table("video_data").select("*").order('created_at', desc=True).execute().data
     
     like_data = db.table("video_likes").select("*").eq('user_id', g.user["usr_id"]).execute().data
     liked_video_ids = []
     for item in like_data:
         liked_video_ids.append(item['vid_id'])
 
-    comment_data = db.table("comments").select("*").execute().data
+    comment_data = db.table("comment_data").select("*").execute().data
     comment_dictionary = {}
     for record in vids:
         vid_id = record["vid_id"]
