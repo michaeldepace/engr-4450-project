@@ -79,7 +79,30 @@ def submit():
 @bp.route('/profile')
 @login_required
 def profile():
-    return render_template('live/profile.html')
+    db = get_db()
+    vids = db.table("video_data").select("*").eq('uploader_id', g.user["usr_id"]).execute().data
+    vid_id_list = []
+
+    for record in vids:
+        # Put this list so that I can check what comments need printed two steps down
+        vid_id_list.append(record['vid_id'])
+
+    like_data = db.table("video_likes").select("*").eq('user_id', g.user["usr_id"]).execute().data
+    liked_video_ids = []
+    for item in like_data:
+        liked_video_ids.append(item['vid_id'])
+
+    comment_data = db.table("comment_data").select("*").in_("video_id",vid_id_list).execute().data
+    comment_dictionary = {}
+    for record in vids:
+        vid_id = record["vid_id"]
+        comment_dictionary[vid_id] = []
+
+    for record in comment_data:
+        # Run into a KeyError as it tries to render comments that do not exist, which is why vid_id_list exists
+        comment_vid_id = record["video_id"]
+        comment_dictionary[comment_vid_id].append(record)
+    return render_template('live/profile.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary)
 
 
 
@@ -90,7 +113,8 @@ def like_video(video_id):
     likes = db.table("video_likes").select('*', count='exact').eq('vid_id', video_id).eq('user_id', g.user["usr_id"]).execute().count
     if likes == 0:
         db.table("video_likes").insert({'vid_id': video_id, 'user_id':g.user["usr_id"]}).execute()
-    return redirect(url_for('live.index'))
+    #return redirect(url_for('live.index'))
+    return redirect(request.referrer)
 
 @bp.route('/unlike/<video_id>', methods=["POST"])
 @login_required
@@ -99,7 +123,8 @@ def unlike_video(video_id):
     likes = db.table("video_likes").select('*', count='exact').eq('vid_id', video_id).eq('user_id', g.user["usr_id"]).execute().count
     if likes != 0:
         db.table("video_likes").delete().eq('vid_id', video_id).eq('user_id', g.user["usr_id"]).execute()
-    return redirect(url_for('live.index'))
+    #return redirect(url_for('live.index'))
+    return redirect(request.referrer)
 
 @bp.route('/video/comment', methods=["POST"])
 @login_required
