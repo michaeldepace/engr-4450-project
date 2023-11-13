@@ -39,7 +39,7 @@
         </nav> -->
 
         <nav class="navbar navbar-expand-lg navbar-light">
-            <a class="navbar-brand" href="{{url_for('live.index')}}">Video Maxima</a>
+            <a class="navbar-brand" href="{{url_for('live.index')}}" style="text-shadow: 4px 3px 1.5px #FF0000, -4px 3px 1.5px #00FFFF   ;">Video Maxima</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
@@ -105,7 +105,9 @@
         <section class="content">
             <header><h1 style="text-align: center; font-family: 'Courier New', Courier, monospace">{% block header %}{% endblock %}</h1></header>
             {% for message in get_flashed_messages() %}
-                <div class="flash">{{ message }}</div>
+                <div class="alert alert-warning flash" role="alert">
+                    <i class="bi bi-exclamation-diamond"></i> {{ message }}
+                  </div>
             {% endfor %}
             <main>
                 {% block content %}{% endblock %}
