@@ -33,7 +33,7 @@ def load_logged_in_user():
         # ).fetchone()
 
         #this might need packaged into smthng simpler like a dictionary
-        g.user = get_db().table("users").select("usr_id, usr_login, usr_created_at").eq("usr_id", user_id).execute().data[0]
+        g.user = get_db().table("users").select("usr_id, usr_login, usr_created_at, prof_pic_s3_path").eq("usr_id", user_id).execute().data[0]
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
@@ -152,6 +152,7 @@ def change_user_icon():
         s3 = connect_to_s3()
         uploaded_image = request.files['file']
         upload_filesize = uploaded_image.seek(0, os.SEEK_END)
+        uploaded_image  .seek(0, os.SEEK_SET)
         upload_filename = secure_filename(uploaded_image.filename)
 
         if upload_filesize > 1000000: #1000 kb limit for picture uploads
@@ -171,8 +172,6 @@ def change_user_icon():
         timestamp = datetime.now().strftime("%d%m%Y%H%M%S%f")
         user_id = g.user["usr_id"]
         file_name = f'icon-{user_id}-{timestamp}.{upload_ext}'
-
-        # print('-----------------------upload file size', uploaded_image.seek(0, os.SEEK_END))
 
         try:
             s3.meta.client.upload_fileobj(uploaded_image, 'engr-4450-fp', file_name)

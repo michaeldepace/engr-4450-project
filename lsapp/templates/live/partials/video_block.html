@@ -1,7 +1,6 @@
 <div style="display:flex; flex-direction:column;">
 {% if videos: %}
     {% for video in videos: %}
-    {{video['vid_id']}}
     {% if comments: %}   
         <div class="card my-3" style="width: 60%; margin: 0 auto; --max-height: 35rem;">
             <div class="card-body">
@@ -95,7 +94,9 @@
                                 <div class="col mx-0 px-0">
                                     <div class="d-flex flex-row-reverse my-1">
                                         {% if video['prof_pic_s3_path'] %}
-                                            <h5 class=""><img src="video['prof_pic_s3_path']" alt="profile pic" /> {{ video['uploader_id'] }}-{{video["usr_login"]}}</h5>
+                                            <h5 class="">
+                                                <img style="width: 20px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video["prof_pic_s3_path"] }}" alt="User profile icon"/>
+                                                 {{ video['uploader_id'] }}-{{video["usr_login"]}}</h5>
                                         {% else %}
                                             <h5 class="mb-0"><i class="bi bi-person-circle"></i> {{ video['uploader_id'] }}-{{video["usr_login"]}}</h5>
                                         {% endif %}
@@ -233,7 +234,10 @@
                             <div class="col mx-0 px-0">
                                 <div class="d-flex flex-row-reverse my-1">
                                     {% if video['prof_pic_s3_path'] %}
-                                        <h5 class=""><img src="video['prof_pic_s3_path']" alt="profile pic" /> {{ video['uploader_id'] }}-{{video["usr_login"]}}</h5>
+                                        <h5 class="">
+                                            <!-- <img src="video['prof_pic_s3_path']" alt="profile pic" /> -->
+                                            <img style="width: 20px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{video['prof_pic_s3_path']}}" alt="User profile icon"/>
+                                             {{ video['uploader_id'] }}-{{video["usr_login"]}}</h5>
                                     {% else %}
                                         <h5 class="mb-0"><i class="bi bi-person-circle"></i> {{ video['uploader_id'] }}-{{video["usr_login"]}}</h5>
                                     {% endif %}
