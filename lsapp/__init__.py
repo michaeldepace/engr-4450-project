@@ -18,14 +18,14 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 load_dotenv() #for local secret management with .env file
-from flask_cors import CORS
+#from flask_cors import CORS
 
 # socketio = SocketIO()
 # clients = {}
 
 def create_app(debug=True, main=True):
     app = Flask(__name__)
-    CORS(app, origins=['http://localhost:5000', 'http://127.0.0.1:5000/'])
+    #CORS(app, origins=['http://localhost:5000', 'http://127.0.0.1:5000/'])
     #DEPLOYMENT CODE - GITHUB SECRETS 
     # app.config.from_mapping(
     #     SECRET_KEY='abracadaniel', #neccessary to run app
@@ -69,32 +69,13 @@ def create_app(debug=True, main=True):
     
     app.add_url_rule('/', endpoint='index')
 
-    @app.after_request
-    def after_request(response: Response) -> Response:
-        #response.access_control_allow_credentials = True
-        response.access_control_allow_credentials = True
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-Requested-With"
-        return response
-
-    # @socketio.on('client_connecting')
-    # def client_connecting(msg): #client sends message that they connected
-    #     timestamp = datetime.now().strftime("%d%m%Y%H%M%S%f")
-    #     client_data = [msg['user_id'], msg['user_name'], timestamp] #user id, user name, when they connected
-
-    #     for key,val in clients.items():#filter out duplicate users (waiting for one client session to go away)
-    #         if msg['user_id'] == val[0]:
-    #             clients.pop(key)
-    #             break
-    #     clients[request.sid] = client_data
-    #     emit('update_clients',  {'data':clients}, broadcast=True)
-    #     return
-
-    # @socketio.on('disconnect')
-    # def on_disconnect():
-    #     clients.pop(request.sid)
-    #     emit('update_clients',  {'data':clients}, broadcast=True) #emit update clients list for all users
-    #     return
+    # @app.after_request
+    # def after_request(response: Response) -> Response:
+    #     #response.access_control_allow_credentials = True
+    #     response.access_control_allow_credentials = True
+    #     response.headers['Access-Control-Allow-Origin'] = '*'
+    #     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    #     response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-Requested-With"
+    #     return response
     
     return app

@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 from datetime import datetime   
 import boto3
-from flask_cors import cross_origin
+#from flask_cors import cross_origin
 from lsapp.auth import login_required
 from lsapp.db import get_db
 from lsapp.s3 import connect_to_s3
@@ -28,7 +28,7 @@ def index():
 
 @bp.route('/videos')
 @login_required
-@cross_origin()
+#@cross_origin()
 def all_videos():
     db = get_db()
     vids = db.table("video_data").select("*").order('created_at', desc=True).execute().data
@@ -57,7 +57,9 @@ def submit():
     s3 = connect_to_s3()
     if request.method == "POST":
         uploaded_video = request.files['file']
-        upload_filesize = uploaded_video.seek(0, os.SEEK_END)
+        upload_filesize = uploaded_video.seek(0, 2)
+        uploaded_video.seek(0, os.SEEK_SET)
+
         upload_filename = secure_filename(uploaded_video.filename)
 
         if upload_filesize > 30000000: #30 mb limit for uploads
@@ -80,7 +82,7 @@ def submit():
             s3.meta.client.upload_fileobj(uploaded_video, 'engr-4450-fp', file_name)
             db.table("submissions").insert({"uploader_id": user_id, "video_s3_path": file_name}).execute()
         except Exception as e:
-            print(e) 
+            print("--------------------------ERROR: ", e) 
             flash('We had a problem uploading your video. Please try again or contact support.')
 
         return redirect(url_for('live.submit'))

@@ -24,6 +24,7 @@ add user icons
 why are there 10 videos in s3 but only 8 on the website -xref with supabase
 make sure you can't upload a zero byte video
 investigate cross origin settings on s3 buck
+foolproof all required form inputs on serverside
 
 obfuscating user and video ids when they're used as url parameters
 deploy to heroku and stress test

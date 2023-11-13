@@ -16,28 +16,6 @@
         <input type="hidden" id="user_id_val" name="user_id" value={{ session['user_id'] }}>
         <input type="hidden" id="user_name_val" name="user_name" value={{ g.user['usr_login'] }}>
 
-
-
-        <!-- <nav class="navbar navbar-light bg-light" style="border: 2px dashed blue;">
-            <a class="navbar-brand" href="{{url_for('live.index')}}">Video Maxima</a>
-            {% if g.user %}
-                <a class="nav-item" href="{{url_for('live.index')}}">Leaderboard</a>
-                <a href="{{url_for('live.all_videos')}}">All Videos</a>
-                <a href="{{url_for('live.submit')}}">Upload video</a>
-                
-                <a href="{{ url_for('live.profile') }}"> 
-                    <div>
-                        <img class="account-icon-img" src="" />
-                        <span>{{ g.user['usr_login'] }} - {{ session['user_id']}}</span>
-                    </div>
-                </a>
-                <a href="{{ url_for('auth.logout') }}">Log Out</a>
-            {% else %}
-                <a href="{{ url_for('auth.register') }}">Register</a>
-                <a href="{{ url_for('auth.login') }}">Log In</a>
-            {% endif %} 
-        </nav> -->
-
         <nav class="navbar navbar-expand-lg navbar-light">
             <a class="navbar-brand" href="{{url_for('live.index')}}" style="text-shadow: 4px -3px 1.5px #FF0000, -4px 3px 1.5px #00FFFF   ;">Video Maxima</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,28 +33,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{url_for('live.submit')}}">Upload Video</a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('live.profile') }}"> 
-                            <div>
-                                {% if g.user['prof_pic_s3_path']: %}
-                                    <img class="account-icon-img" src="{{g.user['prof_pic_s3_path']}}" alt="user icon" />                                
-                                {% else %}
-                                    <i class="bi bi-person-circle"></i>
-                                {% endif %}
-                                <span>{{ g.user['usr_login'] }}</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="nav-item mr-0">
-                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Log Out</a>
-                    </li> -->
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.login') }}">Log In</a>
-                        
                     </li>    
                 {% endif %}
               </ul>
