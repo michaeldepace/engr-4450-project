@@ -118,19 +118,20 @@ def profile():
     user_profile_data["usr_created_at"] = str(user_profile_data["usr_created_at"])[:10]#.strftime('%m/%d/%Y, %H:%M:%S')
     return render_template('live/profile.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary, user_profile_data=user_profile_data)
 
-@bp.route('/video/<vid_id>', methods=["GET"])
+@bp.route('/video/<vid_id>', methods=["GET"]) #view and individual video on its own page
 @login_required
 def view_video(vid_id):
     db = get_db()
     vids = db.table("video_data").select("*").eq('vid_id', vid_id).execute().data
     
-    like_data = db.table("video_likes").select("*").eq('user_id', g.user["usr_id"]).execute().data
+    like_data = db.table("video_likes").select("*").eq('user_id', g.user["usr_id"]).eq('vid_id', vid_id).execute().data
     liked_video_ids = []
     for item in like_data:
         liked_video_ids.append(item['vid_id'])
 
-    comment_data = db.table("comment_data").select("*").execute().data
+    comment_data = db.table("comment_data").select("*").eq('video_id', vid_id).execute().data
     comment_dictionary = {}
+    
     for record in vids:
         vid_id = record["vid_id"]
         comment_dictionary[vid_id] = []
@@ -139,7 +140,7 @@ def view_video(vid_id):
         comment_vid_id = record["video_id"]
         comment_dictionary[comment_vid_id].append(record)
 
-    return render_template('live/videos.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary)
+    return render_template('live/video.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary)
     #return render_template('live/video.html', video=vid)
 
 @bp.route('/like/<video_id>', methods=["POST"])

@@ -103,3 +103,40 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for('index'))
+
+@bp.route('/password', methods=('GET', 'POST'))
+@login_required
+def change_password():
+    if request.method == 'POST':
+        #accept input
+        #validate and flash on error
+            #check passwords match
+            #maybe enforce password rules (do on this and original set password registration method)
+            #maybe make sure you can't reenter your old password
+        #hash and update table
+
+        confirm_password = request.form['confirm-password']
+        password = request.form['password']
+        db = get_db()
+        error = None
+
+        if not password:
+            error = 'Password is required.'
+        elif not confirm_password:
+            error = 'Password confirmation is required.'
+        elif password != confirm_password:
+            error = 'Passwords must match'
+
+        if error is None:
+            try:
+                db.table("users").update({"usr_password": generate_password_hash(password)}).eq('usr_id', g.user['usr_id']).execute()
+            except BaseException as e:
+                error = "error " + e.message
+            else:
+                return redirect(url_for("live.profile"))
+        flash(error)
+
+        return redirect(url_for('auth.change_password'))
+    else:
+        return render_template('auth/change-pswd.html')
+    

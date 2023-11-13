@@ -10,10 +10,16 @@ My Profile
 <div class="card mx-auto mb-4" style="width: 60%;">
     <div class="card-header">Profile Information</div>
     <div class="card-body">
+        change user icon
+        {% if user_profile_data["prof_pic_s3_path"] %}
+        <img alt="User profile icon"/>
+        {% else %}
+        <i class="bi bi-person-circle"></i>
+        {% endif %}
         <p>Username: {{user_profile_data["usr_login"]}}</p>
         <p>Joined: {{user_profile_data["usr_created_at"]}}</p>
-        change password
-        change user icon
+        <a href="{{ url_for('auth.change_password') }}" class="btn btn-primary">Change Password <i class="bi bi-person-fill-lock"></i></a>
+        
     </div>
 </div>
 
