@@ -3,10 +3,13 @@ from werkzeug.utils import secure_filename
 import os
 from datetime import datetime   
 import boto3
+from flask_cors import cross_origin
 from lsapp.auth import login_required
 from lsapp.db import get_db
 from lsapp.s3 import connect_to_s3
 # from lsapp import socketio, clients
+
+
 
 bp = Blueprint('live', __name__)
 
@@ -26,6 +29,7 @@ def index():
 
 @bp.route('/videos')
 @login_required
+@cross_origin()
 def all_videos():
     db = get_db()
     vids = db.table("video_data").select("*").order('created_at', desc=True).execute().data
@@ -81,6 +85,30 @@ def submit():
 def profile():
     return render_template('live/profile.html')
 
+@bp.route('/video/<vid_id>', methods=["GET"])
+@login_required
+def view_video(vid_id):
+    db = get_db()
+    vids = db.table("video_data").select("*").eq('vid_id', vid_id).execute().data
+    
+    like_data = db.table("video_likes").select("*").eq('user_id', g.user["usr_id"]).execute().data
+    liked_video_ids = []
+    for item in like_data:
+        liked_video_ids.append(item['vid_id'])
+
+    comment_data = db.table("comment_data").select("*").execute().data
+    comment_dictionary = {}
+    for record in vids:
+        vid_id = record["vid_id"]
+        comment_dictionary[vid_id] = []
+
+    for record in comment_data:
+        comment_vid_id = record["video_id"]
+        comment_dictionary[comment_vid_id].append(record)
+
+    return render_template('live/videos.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary)
+    return render_template('live/video.html', video=vid)
+
 
 
 @bp.route('/like/<video_id>', methods=["POST"])
@@ -90,7 +118,10 @@ def like_video(video_id):
     likes = db.table("video_likes").select('*', count='exact').eq('vid_id', video_id).eq('user_id', g.user["usr_id"]).execute().count
     if likes == 0:
         db.table("video_likes").insert({'vid_id': video_id, 'user_id':g.user["usr_id"]}).execute()
-    return redirect(url_for('live.index'))
+    new_vid_likes = db.table("video_likes").select('*', count='exact').eq('vid_id', video_id).execute().count
+    #print('__________________________________new likes: ', new_vid_likes)
+    #return redirect(url_for('live.index'))
+    return str(new_vid_likes)
 
 @bp.route('/unlike/<video_id>', methods=["POST"])
 @login_required
@@ -99,7 +130,11 @@ def unlike_video(video_id):
     likes = db.table("video_likes").select('*', count='exact').eq('vid_id', video_id).eq('user_id', g.user["usr_id"]).execute().count
     if likes != 0:
         db.table("video_likes").delete().eq('vid_id', video_id).eq('user_id', g.user["usr_id"]).execute()
-    return redirect(url_for('live.index'))
+    new_vid_likes = db.table("video_likes").select('*', count='exact').eq('vid_id', video_id).execute().count
+    #print('__________________________________new likes: ', new_vid_likes)
+    #return redirect(url_for('live.index'))
+    return str(new_vid_likes) #Response(status=204)
+
 
 @bp.route('/video/comment', methods=["POST"])
 @login_required

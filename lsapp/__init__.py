@@ -18,13 +18,14 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 load_dotenv() #for local secret management with .env file
+from flask_cors import CORS
 
 # socketio = SocketIO()
 # clients = {}
 
 def create_app(debug=True, main=True):
     app = Flask(__name__)
-
+    CORS(app, origins=['http://localhost:5000', 'http://127.0.0.1:5000/'])
     #DEPLOYMENT CODE - GITHUB SECRETS 
     # app.config.from_mapping(
     #     SECRET_KEY='abracadaniel', #neccessary to run app
@@ -68,10 +69,14 @@ def create_app(debug=True, main=True):
     
     app.add_url_rule('/', endpoint='index')
 
-    # @app.after_request
-    # def after_request(response: Response) -> Response:
-    #     response.access_control_allow_credentials = True
-    #     return response
+    @app.after_request
+    def after_request(response: Response) -> Response:
+        #response.access_control_allow_credentials = True
+        response.access_control_allow_credentials = True
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-Requested-With"
+        return response
 
     # @socketio.on('client_connecting')
     # def client_connecting(msg): #client sends message that they connected
