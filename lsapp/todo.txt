@@ -2,49 +2,35 @@ easy
 -format user joined date date
 -add generic error page and add try catches to every view (how to do this with minimal code)
 -link to user profiles potentially and make profile page (change profile template to work for any user) have a profiles page in live and a myprofile page in auth
+-make sure you can't upload a zero byte video
+-hide video link on individual video view page (you can just keep clicking it in a nested navigation to the video)
+-force file size limit on local
 
-hide video link on individual video view page (you can just keep clicking it in a nested navigation to the video)
-handle wierd aspect ratios?? video uploads
-responsive breakpoints makes parkour video shrink really small
-change like functionalty to redirect to request.resend or whatever it is
-force file size limit on local
-
-for all routes that use parameters, make sure that random users can't access stuff they aren't supposed to
-for all routes that use parameters, make sure that there is a proper error page if you type in a bogus parameters
-    validate parameters are correct data type
-
-
-double check all routes are login only and non-logged in users can't access anything important
-
-maybe add profile descriptions
-
-
-
-drag and drop file area - https://medium.com/creative-technology-concepts-code/creating-a-drag-drop-upload-area-bdbe891446a8
-
-
-why are there 10 videos in s3 but only 8 on the website -xref with supabase
-make sure you can't upload a zero byte video
-investigate cross origin settings on s3 buck
-foolproof all required form inputs on serverside
-maybe add code to delete user old profile pics
-
-obfuscating user and video ids when they're used as url parameters
+important 
+-CORS
+    -investigate cross origin settings on s3 buck
+-handle wierd aspect ratios?? video uploads
+-responsive breakpoints makes parkour video shrink really small
+-why are there 10 videos in s3 but only 8 on the website -xref with supabase
 
 END
+-foolproof all required form inputs on serverside
+-double check all routes are login only and non-logged in users can't access anything important
+-deploy to heroku and stress test
+-clean up code and comment
+-remove duplicate and test users and add new test users
+--for all routes that use parameters, make sure that random users can't access stuff they aren't supposed to
+--for all routes that use parameters, make sure that there is a proper error page if you type in a bogus parameters
+    validate parameters are correct data type
 
+Quality of Life
+-obfuscating user and video ids when they're used as url parameters
+-maybe add code to delete user old profile pics
+-change like functionalty to redirect to request.resend or whatever it is
+-maybe add profile descriptions
+-drag and drop file area - https://medium.com/creative-technology-concepts-code/creating-a-drag-drop-upload-area-bdbe891446a8
 
-deploy to heroku and stress test
-clean up code and comment
-remove duplicate and test users and add new test users
-
-
-
-
-
-
-
-
+DONE
 x - move video link to top of video block
 x - create individual video page
 x - style response when no videos are available for the video page
