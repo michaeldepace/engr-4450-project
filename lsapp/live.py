@@ -17,7 +17,7 @@ bp = Blueprint('live', __name__)
 @login_required
 def index():
     db = get_db()
-    leaderboard_vids = db.table("video_like_data").select("*").order("num_likes", desc=True).limit(5).execute().data
+    leaderboard_vids = db.table("video_data").select("*").order("num_likes", desc=True).limit(5).execute().data
     like_data = db.table("video_likes").select("*").eq('user_id', g.user["usr_id"]).execute().data
     liked_video_ids = []
     for item in like_data:
