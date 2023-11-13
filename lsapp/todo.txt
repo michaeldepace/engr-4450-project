@@ -3,14 +3,23 @@ handle wierd aspect ratios?? video uploads
 responsive breakpoints makes parkour video shrink really small
 add generic error page
 
-how to render the same video template twice so the user can see liked and uploaded videos
+how to render the same video template twice so the user can see liked and uploaded videos - https://stackoverflow.com/questions/9404990/how-to-pass-selected-named-arguments-to-jinja2s-include-context
+    -this lets you locally rename the parameters you pass 
 format user joined date date
 change like functionalty to redirect to request.resend or whatever it is
 force file size limit on local
 
+for all routes that use parameters, make sure that random users can't access stuff they aren't supposed to
+for all routes that use parameters, make sure that there is a proper error page if you type in a bogus parameters
+    validate parameters are correct data type
+
+double check all routes are login only and non-logged in users can't access anything important
+
+maybe add profile descriptions
+
 link to user profiles potentially and make profile page (change profile template to work for any user)
-move video link to top of video block
-drang and drop file area - https://medium.com/creative-technology-concepts-code/creating-a-drag-drop-upload-area-bdbe891446a8
+
+drag and drop file area - https://medium.com/creative-technology-concepts-code/creating-a-drag-drop-upload-area-bdbe891446a8
 
 add user icons
 
@@ -18,6 +27,8 @@ obfuscating user and video ids when they're used as url parameters
 deploy to heroku and stress test
 clean up code and comment
 
+
+x - move video link to top of video block
 x - create individual video page
 x - style response when no videos are available for the video page
 x - make sure two accounts can't have the same username

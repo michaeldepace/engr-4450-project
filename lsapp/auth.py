@@ -2,6 +2,8 @@ from flask import (Blueprint, flash, g, redirect, render_template, request, sess
 from werkzeug.security import check_password_hash, generate_password_hash
 import functools
 from lsapp.db import get_db
+from werkzeug.utils import secure_filename
+from lsapp.s3 import connect_to_s3
 
 bp = Blueprint('auth', __name__, url_prefix='/auth') #connect this script to the html template files and http url routes
 
@@ -140,3 +142,40 @@ def change_password():
     else:
         return render_template('auth/change-pswd.html')
     
+@bp.route('/icon', methods=('GET', 'POST'))
+@login_required
+def change_user_icon():
+    if request.method == 'POST':
+        db = get_db()
+    s3 = connect_to_s3()
+    if request.method == "POST":
+        uploaded_video = request.files['file']
+        upload_filesize = uploaded_video.seek(0, os.SEEK_END)
+        upload_filename = secure_filename(uploaded_video.filename)
+
+        if upload_filesize > 30000000: #30 mb limit for uploads
+            flash('The uploaded file is too big. 30 mb upload limit, please try again.')
+            return redirect(url_for('live.submit'))
+
+        if upload_filename == '':
+            flash('Invalid file name. Please try again.')
+            return redirect(url_for('live.submit'))
+
+        if '.' not in upload_filename or upload_filename.rsplit('.', 1)[1].lower() not in current_app.config["UPLOAD_EXTENSIONS"]:
+            flash('Incorrect file type. MP4 files only, please try again.')
+            return redirect(url_for('live.submit'))
+
+        timestamp = datetime.now().strftime("%d%m%Y%H%M%S%f")
+        user_id = g.user["usr_id"]
+        file_name = f'vid-{user_id}-{timestamp}.mp4'
+
+        try:
+            s3.meta.client.upload_fileobj(uploaded_video, 'engr-4450-fp', file_name)
+            db.table("submissions").insert({"uploader_id": user_id, "video_s3_path": file_name}).execute()
+        except Exception as e:
+            print(e) 
+            flash('We had a problem uploading your video. Please try again or contact support.')
+
+        return redirect(url_for('live.submit'))
+    else:
+        return render_template('auth/change-icon.html', user_profile_data={})

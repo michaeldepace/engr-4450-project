@@ -116,7 +116,10 @@ def profile():
 
     user_profile_data = db.table("users").select("*").eq('usr_id', g.user['usr_id']).execute().data[0]
     user_profile_data["usr_created_at"] = str(user_profile_data["usr_created_at"])[:10]#.strftime('%m/%d/%Y, %H:%M:%S')
-    return render_template('live/profile.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary, user_profile_data=user_profile_data)
+
+    liked_video_data = db.table("video_likes").select('video_likes.vid_id, video_data.vid_id').eq('video_likes.user_id', g.user["usr_id"]).execute().data
+
+    return render_template('live/profile.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary, user_profile_data=user_profile_data, liked_vids=liked_video_data)
 
 @bp.route('/video/<vid_id>', methods=["GET"]) #view and individual video on its own page
 @login_required
