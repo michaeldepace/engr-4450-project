@@ -3,8 +3,7 @@ handle wierd aspect ratios?? video uploads
 responsive breakpoints makes parkour video shrink really small
 add generic error page
 
-how to render the same video template twice so the user can see liked and uploaded videos - https://stackoverflow.com/questions/9404990/how-to-pass-selected-named-arguments-to-jinja2s-include-context
-    -this lets you locally rename the parameters you pass 
+
 format user joined date date
 change like functionalty to redirect to request.resend or whatever it is
 force file size limit on local
@@ -22,10 +21,14 @@ link to user profiles potentially and make profile page (change profile template
 drag and drop file area - https://medium.com/creative-technology-concepts-code/creating-a-drag-drop-upload-area-bdbe891446a8
 
 add user icons
+why are there 10 videos in s3 but only 8 on the website -xref with supabase
+make sure you can't upload a zero byte video
+investigate cross origin settings on s3 buck
 
 obfuscating user and video ids when they're used as url parameters
 deploy to heroku and stress test
 clean up code and comment
+remove duplicate and test users and add new test users
 
 
 x - move video link to top of video block
@@ -34,3 +37,4 @@ x - style response when no videos are available for the video page
 x - make sure two accounts can't have the same username
 x - add change password functionality
 x - add individual video link to each video on leaderboard page
+x - how to render the same video template twice so the user can see liked and uploaded videos - https://stackoverflow.com/questions/9404990/how-to-pass-selected-named-arguments-to-jinja2s-include-context

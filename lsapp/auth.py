@@ -4,6 +4,8 @@ import functools
 from lsapp.db import get_db
 from werkzeug.utils import secure_filename
 from lsapp.s3 import connect_to_s3
+from datetime import datetime
+import os
 
 bp = Blueprint('auth', __name__, url_prefix='/auth') #connect this script to the html template files and http url routes
 
@@ -147,35 +149,38 @@ def change_password():
 def change_user_icon():
     if request.method == 'POST':
         db = get_db()
-    s3 = connect_to_s3()
-    if request.method == "POST":
-        uploaded_video = request.files['file']
-        upload_filesize = uploaded_video.seek(0, os.SEEK_END)
-        upload_filename = secure_filename(uploaded_video.filename)
+        s3 = connect_to_s3()
+        uploaded_image = request.files['file']
+        upload_filesize = uploaded_image.seek(0, os.SEEK_END)
+        upload_filename = secure_filename(uploaded_image.filename)
 
-        if upload_filesize > 30000000: #30 mb limit for uploads
-            flash('The uploaded file is too big. 30 mb upload limit, please try again.')
-            return redirect(url_for('live.submit'))
+        if upload_filesize > 1000000: #1000 kb limit for picture uploads
+            flash('The uploaded file is too big. 1 mb upload limit, please try again.')
+            return redirect(url_for('auth.change_user_icon'))
 
         if upload_filename == '':
             flash('Invalid file name. Please try again.')
-            return redirect(url_for('live.submit'))
+            return redirect(url_for('auth.change_user_icon'))
 
-        if '.' not in upload_filename or upload_filename.rsplit('.', 1)[1].lower() not in current_app.config["UPLOAD_EXTENSIONS"]:
-            flash('Incorrect file type. MP4 files only, please try again.')
-            return redirect(url_for('live.submit'))
+        if '.' not in upload_filename or upload_filename.rsplit('.', 1)[1].lower() not in ('png','jpg','jpeg'):
+            flash('Incorrect file type. JPG, JPEG, and PNG files only, please try again.')
+            return redirect(url_for('auth.change_user_icon'))
+        
+        upload_ext = upload_filename.rsplit('.', 1)[1].lower()
 
         timestamp = datetime.now().strftime("%d%m%Y%H%M%S%f")
         user_id = g.user["usr_id"]
-        file_name = f'vid-{user_id}-{timestamp}.mp4'
+        file_name = f'icon-{user_id}-{timestamp}.{upload_ext}'
+
+        # print('-----------------------upload file size', uploaded_image.seek(0, os.SEEK_END))
 
         try:
-            s3.meta.client.upload_fileobj(uploaded_video, 'engr-4450-fp', file_name)
-            db.table("submissions").insert({"uploader_id": user_id, "video_s3_path": file_name}).execute()
+            s3.meta.client.upload_fileobj(uploaded_image, 'engr-4450-fp', file_name)
+            db.table("users").update({"prof_pic_s3_path": file_name}).eq('usr_id', g.user['usr_id']).execute()
         except Exception as e:
             print(e) 
-            flash('We had a problem uploading your video. Please try again or contact support.')
+            flash('We had a problem uploading your image. Please try again or contact support.')
 
-        return redirect(url_for('live.submit'))
+        return redirect(url_for('live.profile'))
     else:
         return render_template('auth/change-icon.html', user_profile_data={})

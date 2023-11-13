@@ -36,21 +36,18 @@ My Profile
     </div>
     <div class="card-body p-0">
         <div class="collapse container" id="user-uploaded-videos-collapse">
-            <div class="card mx-4 my-2">
-                <div class="card-header">My Videos</div>
+            <!-- <div class="card mx-4 my-2">
+                <div class="card-header">My Uploaded Videos</div>
                 <div class="card-body">
-                    {% include './live/partials/video_block.html'%}
+                    
                 </div>
-            </div>    
+            </div>   -->
+            {% include './live/partials/video_block.html'%}  
         </div>
         <div class="collapse" id="user-liked-videos-collapse">
-            <div class="card mx-4 my-2">
-                <div class="card-header">My Videos</div>
-                <div class="card-body">
-                    {% include './live/partials/video_block.html'%}
-                    {{liked_vids}}
-                </div>
-            </div>
+            {% with videos=liked_vids %}
+                {% include './live/partials/video_block.html'%}
+            {% endwith %}
         </div>
     </div>
 </div>

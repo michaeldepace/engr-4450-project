@@ -45,7 +45,7 @@ def create_app(debug=True, main=True):
     )
 
     app.config["UPLOAD_FOLDER"] = 'video_upload' #get rid of this
-    app.config['UPLOAD_EXTENSIONS'] = ['.mp4']
+    app.config['UPLOAD_EXTENSIONS'] = ['mp4']
     app.config["MAX_CONTENT_PATH"] = 30 * 1000 * 1000 # 30 megabyte upload limit
 
     app.config['S3_BUCKET_NAME'] = "engr-4450-fp"
