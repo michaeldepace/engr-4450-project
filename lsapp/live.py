@@ -7,7 +7,6 @@ from flask_cors import cross_origin
 from lsapp.auth import login_required
 from lsapp.db import get_db
 from lsapp.s3 import connect_to_s3
-# from lsapp import socketio, clients
 
 
 
@@ -20,7 +19,7 @@ bp = Blueprint('live', __name__)
 @login_required
 def index():
     db = get_db()
-    leaderboard_vids = db.table("video_like_data").select("*").order("num_likes", desc=True).limit(5).execute().data
+    leaderboard_vids = db.table("video_data").select("*").order("num_likes", desc=True).limit(5).execute().data
     like_data = db.table("video_likes").select("*").eq('user_id', g.user["usr_id"]).execute().data
     liked_video_ids = []
     for item in like_data:
@@ -114,7 +113,10 @@ def profile():
         # Run into a KeyError as it tries to render comments that do not exist, which is why vid_id_list exists
         comment_vid_id = record["video_id"]
         comment_dictionary[comment_vid_id].append(record)
-    return render_template('live/profile.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary)
+
+    user_profile_data = db.table("users").select("*").eq('usr_id', g.user['usr_id']).execute().data[0]
+    user_profile_data["usr_created_at"] = str(user_profile_data["usr_created_at"])[:10]#.strftime('%m/%d/%Y, %H:%M:%S')
+    return render_template('live/profile.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary, user_profile_data=user_profile_data)
 
 @bp.route('/video/<vid_id>', methods=["GET"])
 @login_required

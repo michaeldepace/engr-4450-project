@@ -6,8 +6,48 @@ My Profile
 
 {% block content %}
 
-change password
-change image
-{% include 'videoblock.html'%}
+
+<div class="card mx-auto mb-4" style="width: 60%;">
+    <div class="card-header">Profile Information</div>
+    <div class="card-body">
+        <p>Username: {{user_profile_data["usr_login"]}}</p>
+        <p>Joined: {{user_profile_data["usr_created_at"]}}</p>
+        change password
+        change user icon
+    </div>
+</div>
+
+
+<div class="card mx-auto" style="width: 60%;">
+    <div class="card-header">
+        <a class="btn btn-primary" data-toggle="collapse" href="#user-uploaded-videos-collapse" role="button" aria-expanded="false" aria-controls="user-uploaded-videos-collapse">
+            My Videos <i class="bi bi-camera-video"></i>
+        </a>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#user-liked-videos-collapse" aria-expanded="false" aria-controls="user-liked-videos-collapse">
+        My Likes <i class="bi bi-hand-thumbs-up"></i>
+        </button>
+    </div>
+    <div class="card-body p-0">
+        <div class="collapse container" id="user-uploaded-videos-collapse">
+            <div class="card mx-4 my-2">
+                <div class="card-header">My Videos</div>
+                <div class="card-body">
+                    {% include './live/partials/video_block.html'%}
+                </div>
+            </div>    
+        </div>
+        <div class="collapse" id="user-liked-videos-collapse">
+        my liked videos
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
 
 {% endblock %}

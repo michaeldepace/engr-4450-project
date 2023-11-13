@@ -1,0 +1,18 @@
+handle wierd aspect ratios?? video uploads
+error page
+style response when no videos
+how to render the same video template twice so the user can see liked and uploaded videos
+format user joined date date
+change like functionalty to redirect to request.resend or whatever it is
+force file size on local
+add individual video link to each video on leaderboard page
+create individual video page
+link to user profiles potentially and make profile page (change profile template to work for any user)
+move video link to top of video block
+drang and drop file area - https://medium.com/creative-technology-concepts-code/creating-a-drag-drop-upload-area-bdbe891446a8
+deploy to heroku and stress test
+add user icons
+add change password functionality
+responsive breakpoints makes parkour video shrink really small
+
+x - make sure two accounts can't have the same username

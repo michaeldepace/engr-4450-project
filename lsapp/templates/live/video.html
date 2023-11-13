@@ -3,92 +3,84 @@
 Video Title 
 {% endblock %}
 
-
 {% block content %}
 <div style="display:flex; flex-direction:column;">
-    
-    <!-- <div class="vid-container"> -->
-        
-        <div class="card my-3" style="width: 60%; margin: 0 auto; --max-height: 35rem;">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <div class="" style="display: block; object-fit:contain;">  <!-- d-flex justify-content-center -->
-                            <!-- <div class="" style="width:100%;"> -->
-                                <video class="" style="width: 100% !important; height: auto !important; object-fit:contain;" controls>
-                                    <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video['video_s3_path'] }}" type="video/mp4">
-                                </video>    
-                            <!-- </div> -->
-                        </div>
+    <div class="card my-3" style="width: 60%; margin: 0 auto; --max-height: 35rem;">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="" style="display: block; object-fit:contain;">
+                        <video class="" style="width: 100% !important; height: auto !important; object-fit:contain;" controls>
+                            <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video['video_s3_path'] }}" type="video/mp4">
+                        </video>    
                     </div>
-                    <div class="col">
-                        <div class="container">
-                            <div class="row mb-2">
-                                <div class="col-3 mx-0 px-0">
-                                    <script type="text/javascript">
+                </div>
+                <div class="col">
+                    <div class="container">
+                        <div class="row mb-2">
+                            <div class="col-3 mx-0 px-0">
+                                <script type="text/javascript">
+                                    //var numLikes_{{video['vid_id']}} = {{ video['num_likes'] }};
+                                    function like_video_local_{{video['vid_id']}}(e){
+                                        //alert(numLikes_{{video['vid_id']}});
+                                        //numLikes_{{video['vid_id']}}+=1;
+                                        //$("#like_vid_form_{{video['vid_id']}}").submit();
                                         
-                                        //var numLikes_{{video['vid_id']}} = {{ video['num_likes'] }};
-                                        function like_video_local_{{video['vid_id']}}(e){
-                                            //alert(numLikes_{{video['vid_id']}});
-                                            //numLikes_{{video['vid_id']}}+=1;
-                                            //$("#like_vid_form_{{video['vid_id']}}").submit();
-                                            
-                                            $.ajax({ 
-                                                type: "POST", 
-                                                url: '{{url_for('live.like_video', video_id=video['vid_id'])}}', 
-                                                data: $('#like_vid_form_{{video['vid_id']}}').serialize(), 
-                                                success: function(data) { 
-                                                    // Ajax call completed successfully 
-                                                    //alert("Form Submited Successfully - like", parseInt(data)); 
-                                                    console.log(data)
-                                                    $('#like_vid_form_{{video['vid_id']}}').replaceWith(`
-                                                    <form id="unlike_vid_form_{{video['vid_id']}}" action="{{url_for('live.unlike_video', video_id=video['vid_id'])}}" method="post" class="px-0">
-                                                        <input type="hidden" value="{{ video['vid_id'] }}"/>
-                                                        <button onclick="unlike_video_local_{{video['vid_id']}}();" id="btn-unlike-vid" type="button" class="btn"><i class="bi bi-hand-thumbs-up-fill"></i> `+parseInt(data)+`</button>
-                                                    </form>
-                                                    `);
+                                        $.ajax({ 
+                                            type: "POST", 
+                                            url: '{{url_for('live.like_video', video_id=video['vid_id'])}}', 
+                                            data: $('#like_vid_form_{{video['vid_id']}}').serialize(), 
+                                            success: function(data) { 
+                                                // Ajax call completed successfully 
+                                                //alert("Form Submited Successfully - like", parseInt(data)); 
+                                                console.log(data)
+                                                $('#like_vid_form_{{video['vid_id']}}').replaceWith(`
+                                                <form id="unlike_vid_form_{{video['vid_id']}}" action="{{url_for('live.unlike_video', video_id=video['vid_id'])}}" method="post" class="px-0">
+                                                    <input type="hidden" value="{{ video['vid_id'] }}"/>
+                                                    <button onclick="unlike_video_local_{{video['vid_id']}}();" id="btn-unlike-vid" type="button" class="btn"><i class="bi bi-hand-thumbs-up-fill"></i> `+parseInt(data)+`</button>
+                                                </form>
+                                                `);
+                                                
+                                                //.replaceWith('<button onclick="unlike_video_local_{{video['vid_id']}}();" id="btn-unlike-vid" type="button" class="btn"><i class="bi bi-hand-thumbs-up-fill"></i> '+parseInt(data)+'</button>');
+                                            }, 
+                                            error: function(data) { 
                                                     
-                                                    //.replaceWith('<button onclick="unlike_video_local_{{video['vid_id']}}();" id="btn-unlike-vid" type="button" class="btn"><i class="bi bi-hand-thumbs-up-fill"></i> '+parseInt(data)+'</button>');
-                                                }, 
-                                                error: function(data) { 
-                                                      
-                                                    // Some error in ajax call 
-                                                    alert("Error Liking Post"); 
-                                                } 
-                                            });
+                                                // Some error in ajax call 
+                                                alert("Error Liking Post"); 
+                                            } 
+                                        });
 
-                                        };
-                                        function unlike_video_local_{{video['vid_id']}}(){
-                                            //alert(numLikes_{{video['vid_id']}});
-                                            //numLikes_{{video['vid_id']}}-=1;
-                                            //$("#unlike_vid_form_{{video['vid_id']}}").submit();
-                                            //$('#btn-unlike-vid').replaceWith('<button onclick="like_video_local_{{video['vid_id']}}();" id="btn-like-vid" type="submit" class="btn"><i class="bi bi-hand-thumbs-up"></i> '+numLikes_{{video['vid_id']}}+'</button>');
-                                            $.ajax({ 
-                                                type: "POST", 
-                                                url: '{{url_for('live.unlike_video', video_id=video['vid_id'])}}', 
-                                                data: $('#unlike_vid_form_{{video['vid_id']}}').serialize(), 
-                                                success: function(data) { 
-                                                    // Ajax call completed successfully 
-                                                    //alert("Form Submited Successfully - unlike", parseInt(data)); 
-                                                    console.log(data)
-                                                    $('#unlike_vid_form_{{video['vid_id']}}').replaceWith(`
-                                                    <form id="like_vid_form_{{video['vid_id']}}" action="{{url_for('live.like_video', video_id=video['vid_id'])}}" method="post" class="px-0">
-                                                        <input type="hidden" value="{{ video['vid_id'] }}"/>
-                                                        <button onclick="like_video_local_{{video['vid_id']}}();" id="btn-like-vid" type="button" class="btn"><i class="bi bi-hand-thumbs-up"></i> `+parseInt(data)+`</button>
-                                                    </form>
-                                                    `);
+                                    };
+                                    function unlike_video_local_{{video['vid_id']}}(){
+                                        //alert(numLikes_{{video['vid_id']}});
+                                        //numLikes_{{video['vid_id']}}-=1;
+                                        //$("#unlike_vid_form_{{video['vid_id']}}").submit();
+                                        //$('#btn-unlike-vid').replaceWith('<button onclick="like_video_local_{{video['vid_id']}}();" id="btn-like-vid" type="submit" class="btn"><i class="bi bi-hand-thumbs-up"></i> '+numLikes_{{video['vid_id']}}+'</button>');
+                                        $.ajax({ 
+                                            type: "POST", 
+                                            url: '{{url_for('live.unlike_video', video_id=video['vid_id'])}}', 
+                                            data: $('#unlike_vid_form_{{video['vid_id']}}').serialize(), 
+                                            success: function(data) { 
+                                                // Ajax call completed successfully 
+                                                //alert("Form Submited Successfully - unlike", parseInt(data)); 
+                                                console.log(data)
+                                                $('#unlike_vid_form_{{video['vid_id']}}').replaceWith(`
+                                                <form id="like_vid_form_{{video['vid_id']}}" action="{{url_for('live.like_video', video_id=video['vid_id'])}}" method="post" class="px-0">
+                                                    <input type="hidden" value="{{ video['vid_id'] }}"/>
+                                                    <button onclick="like_video_local_{{video['vid_id']}}();" id="btn-like-vid" type="button" class="btn"><i class="bi bi-hand-thumbs-up"></i> `+parseInt(data)+`</button>
+                                                </form>
+                                                `);
+                                                
+                                                //.replaceWith('<form id="like_vid_form_{{video['vid_id']}}" action="{{url_for('live.like_video', video_id=video['vid_id'])}}" method="post" class="px-0"><input type="hidden" value="{{ video['vid_id'] }}"/><button onclick="like_video_local_{{video['vid_id']}}();" id="btn-like-vid" type="button" class="btn"><i class="bi bi-hand-thumbs-up"></i> {{ video['num_likes'] }}</button></form><button onclick="like_video_local_{{video['vid_id']}}();" id="btn-like-vid" type="button" class="btn"><i class="bi bi-hand-thumbs-up"></i> '+parseInt(data)+'</button>');
+                                            }, 
+                                            error: function(data) { 
                                                     
-                                                    //.replaceWith('<form id="like_vid_form_{{video['vid_id']}}" action="{{url_for('live.like_video', video_id=video['vid_id'])}}" method="post" class="px-0"><input type="hidden" value="{{ video['vid_id'] }}"/><button onclick="like_video_local_{{video['vid_id']}}();" id="btn-like-vid" type="button" class="btn"><i class="bi bi-hand-thumbs-up"></i> {{ video['num_likes'] }}</button></form><button onclick="like_video_local_{{video['vid_id']}}();" id="btn-like-vid" type="button" class="btn"><i class="bi bi-hand-thumbs-up"></i> '+parseInt(data)+'</button>');
-                                                }, 
-                                                error: function(data) { 
-                                                      
-                                                    // Some error in ajax call 
-                                                    alert("Error Unliking Post"); 
-                                                } 
-                                            });
-                                        };
-                                        
-                                    </script>
+                                                // Some error in ajax call 
+                                                alert("Error Unliking Post"); 
+                                            } 
+                                        });
+                                    };
+                                </script>
                                     {% if video['vid_id'] in likes %}
                                     <form id="unlike_vid_form_{{video['vid_id']}}" action="{{url_for('live.unlike_video', video_id=video['vid_id'])}}" method="post" class="px-0">
                                         <input type="hidden" value="{{ video['vid_id'] }}"/>
@@ -150,47 +142,6 @@ Video Title
                     </div>
                     <p>video-{{ video['vid_id'] }}</p>  
                 </div>
-                
-              <!-- <div class="vid-block" >
-                <div style="display: flex; flex-direction: row; justify-content:center;">
-                    <div>
-                        <video height="400" controls>
-                            <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video['video_s3_path'] }}" type="video/mp4">
-                        </video>    
-                    </div>
-                    <div class="comment-block" style="border: 2px solid black">
-                        <div style="border: 2px solid green; display:flex; flex-direction:row;">
-                            
-                            <p>user-{{ video['uploader_id'] }}--</p>
-                            <p>likes-{{ video['num_likes'] }}--</p>
-                            <p>video-{{ video['vid_id'] }}--</p>
-                            {% if video['vid_id'] in likes %}
-                            <form action="{{url_for('live.unlike_video', video_id=video['vid_id'])}}" method="post">
-                                <input type="hidden" value="{{ video['vid_id'] }}"/>
-                                <button type="submit">Unlike Video</button>
-                            </form> 
-                            {% else %}
-                            <form action="{{url_for('live.like_video', video_id=video['vid_id'])}}" method="post">
-                                <input type="hidden" value="{{ video['vid_id'] }}"/>
-                                <button type="submit">Like Video</button>
-                            </form>
-                            {% endif %}
-                        </div>
-                            {% for comment in comments[video['vid_id']]: %}    
-                                <p>{{ comment["user_id"] }}: {{ comment["comment_text"] }}</p>
-                            {% endfor %}
-                        
-                        
-                        <form action="{{url_for('live.submit_video_comment')}}" method="post">
-                            <input type="hidden" value="{{ video['vid_id'] }}" name="vid_id"/>
-                            <input type="hidden" id="user_id_val" name="user_id" value={{ session['user_id'] }}>
-                            <input type="text" name="comment_text" />
-                            <button type="submit">Post</button> 
-                        </form>
-                    </div>
-                </div>
-             -->
-            
             </div>
         </div>            
     </div>

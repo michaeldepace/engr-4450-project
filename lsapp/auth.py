@@ -43,6 +43,8 @@ def register():
             error = 'Username is required.'
         elif not password:
             error = 'Password is required.'
+        elif db.table("users").select("*", count='exact').eq('usr_login', username).execute().count > 0:
+            error = "This username is taken."
 
         if error is None:
             try:
