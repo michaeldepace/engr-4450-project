@@ -2,6 +2,7 @@ from flask import (Flask, render_template, Response, Blueprint, flash, g, redire
 # from flask_socketio import SocketIO, emit
 import os
 from datetime import datetime
+from werkzeug.exceptions import HTTPException
 
 
 #from flask_cors import CORS, cross_origin
@@ -68,6 +69,23 @@ def create_app(debug=True, main=True):
     app.register_blueprint(live.bp)
     
     app.add_url_rule('/', endpoint='index')
+
+
+    # handle application errors
+    @app.errorhandler(404)
+    def not_found_error(er):
+        message = "This page doesn't exist silly :/"
+        return render_template('error/error.html', msg=message)
+
+    @app.errorhandler(500)
+    def internal_error(er):
+        message = "There's an error on our end ¯\_(ツ)_/¯"
+        return render_template('error/error.html', msg=message)
+
+    @app.errorhandler(HTTPException)
+    def generic_error(er):
+        message = "There's an error on our end ¯\_(ツ)_/¯"
+        return render_template('error/error.html', msg=message)
 
     # @app.after_request
     # def after_request(response: Response) -> Response:

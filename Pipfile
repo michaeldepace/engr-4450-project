@@ -9,6 +9,7 @@ boto3 = "*"
 python-dotenv = "*"
 supabase = "==2.0.3"
 flask-cors = "*"
+gunicorn = "*"
 
 [dev-packages]
 
