@@ -96,9 +96,9 @@
                                         {% if video['prof_pic_s3_path'] %}
                                             <h5 class="">
                                                 <img style="width: 20px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video["prof_pic_s3_path"] }}" alt="User profile icon"/>
-                                                 {{ video['uploader_id'] }}-{{video["usr_login"]}}</h5>
+                                                 {{video["usr_login"]}}</h5>
                                         {% else %}
-                                            <h5 class="mb-0"><i class="bi bi-person-circle"></i> {{ video['uploader_id'] }}-{{video["usr_login"]}}</h5>
+                                            <h5 class="mb-0"><i class="bi bi-person-circle"></i> {{video["usr_login"]}}</h5>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -237,9 +237,9 @@
                                         <h5 class="">
                                             <!-- <img src="video['prof_pic_s3_path']" alt="profile pic" /> -->
                                             <img style="width: 20px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{video['prof_pic_s3_path']}}" alt="User profile icon"/>
-                                             {{ video['uploader_id'] }}-{{video["usr_login"]}}</h5>
+                                             {{video["usr_login"]}}</h5>
                                     {% else %}
-                                        <h5 class="mb-0"><i class="bi bi-person-circle"></i> {{ video['uploader_id'] }}-{{video["usr_login"]}}</h5>
+                                        <h5 class="mb-0"><i class="bi bi-person-circle"></i> {{video["usr_login"]}}</h5>
                                     {% endif %}
                                 </div>
                             </div>

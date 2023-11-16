@@ -4,8 +4,8 @@ easy
 -make sure you can't upload a zero byte video
 -hide video link on individual video view page (you can just keep clicking it in a nested navigation to the video)
 -force file size limit on local
--display my videos on profile ooad
 -add try catches to every view
+-add content type on file upload
 
 important 
 -CORS
@@ -42,3 +42,4 @@ x - add individual video link to each video on leaderboard page
 x - how to render the same video template twice so the user can see liked and uploaded videos - https://stackoverflow.com/questions/9404990/how-to-pass-selected-named-arguments-to-jinja2s-include-context
 x - add user icons
 x - add generic error page and 
+x-display my videos on profile load

@@ -1,18 +1,13 @@
 from flask import (Blueprint, flash, g, redirect, render_template, request, Response, url_for, current_app, session, jsonify, abort)
 from werkzeug.utils import secure_filename
 import os
-from datetime import datetime   
+from datetime import datetime
 import boto3
-#from flask_cors import cross_origin
 from lsapp.auth import login_required
 from lsapp.db import get_db
 from lsapp.s3 import connect_to_s3
 
-
 bp = Blueprint('live', __name__)
-
-
-#handle missing request id client dictionary key pop error 
 
 @bp.route('/')
 @login_required
@@ -46,7 +41,6 @@ def all_videos():
     for record in comment_data:
         comment_vid_id = record["video_id"]
         comment_dictionary[comment_vid_id].append(record)
-
     return render_template('live/videos.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary)
 
 @bp.route('/submission', methods=["GET", "POST"])
@@ -61,15 +55,18 @@ def submit():
 
         upload_filename = secure_filename(uploaded_video.filename)
 
-        if upload_filesize > 30000000: #30 mb limit for uploads
+        # check if video file size is creater than 30 mb limit
+        if upload_filesize > 30000000: 
             flash('The uploaded file is too big. 30 mb upload limit, please try again.')
             return redirect(url_for('live.submit'))
 
+        # make sure the filename isn't empty
         if upload_filename == '':
             flash('Invalid file name. Please try again.')
             return redirect(url_for('live.submit'))
 
-        if '.' not in upload_filename or upload_filename.rsplit('.', 1)[1].lower() not in current_app.config["UPLOAD_EXTENSIONS"]:
+        # make sure the file extension is .mp4
+        if '.' not in upload_filename or upload_filename.rsplit('.', 1)[1].lower() != 'mp4': #not in current_app.config["UPLOAD_EXTENSIONS"]:
             flash('Incorrect file type. MP4 files only, please try again.')
             return redirect(url_for('live.submit'))
 
@@ -78,15 +75,15 @@ def submit():
         file_name = f'vid-{user_id}-{timestamp}.mp4'
 
         try:
-            s3.meta.client.upload_fileobj(uploaded_video, 'engr-4450-fp', file_name)
-            db.table("submissions").insert({"uploader_id": user_id, "video_s3_path": file_name}).execute()
+            s3.meta.client.upload_fileobj(uploaded_video, 'engr-4450-fp', file_name) # push the file data to the s3 bucket
+            db.table("submissions").insert({"uploader_id": user_id, "video_s3_path": file_name}).execute() # log uploaded video in submissions db table
         except Exception as e:
-            print("--------------------------ERROR: ", e) 
             flash('We had a problem uploading your video. Please try again or contact support.')
 
         return redirect(url_for('live.submit'))
     else:
         return render_template('live/submit.html')
+
 
 @bp.route('/profile')
 @login_required
@@ -146,7 +143,6 @@ def view_video(vid_id):
         comment_dictionary[comment_vid_id].append(record)
 
     return render_template('live/video.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary)
-    #return render_template('live/video.html', video=vid)
 
 @bp.route('/like/<video_id>', methods=["POST"])
 @login_required
@@ -156,8 +152,6 @@ def like_video(video_id):
     if likes == 0:
         db.table("video_likes").insert({'vid_id': video_id, 'user_id':g.user["usr_id"]}).execute()
     new_vid_likes = db.table("video_likes").select('*', count='exact').eq('vid_id', video_id).execute().count
-    #print('__________________________________new likes: ', new_vid_likes)
-    #return redirect(url_for('live.index'))
     return str(new_vid_likes)
 
 @bp.route('/unlike/<video_id>', methods=["POST"])
@@ -168,10 +162,7 @@ def unlike_video(video_id):
     if likes != 0:
         db.table("video_likes").delete().eq('vid_id', video_id).eq('user_id', g.user["usr_id"]).execute()
     new_vid_likes = db.table("video_likes").select('*', count='exact').eq('vid_id', video_id).execute().count
-    #print('__________________________________new likes: ', new_vid_likes)
-    #return redirect(url_for('live.index'))
-    return str(new_vid_likes) #Response(status=204)
-
+    return str(new_vid_likes)
 
 @bp.route('/video/comment', methods=["POST"])
 @login_required
