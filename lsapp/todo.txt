@@ -1,0 +1,44 @@
+easy
+-format user joined date date
+-link to user profiles potentially and make profile page (change profile template to work for any user) have a profiles page in live and a myprofile page in auth
+-make sure you can't upload a zero byte video
+-hide video link on individual video view page (you can just keep clicking it in a nested navigation to the video)
+-force file size limit on local
+-display my videos on profile ooad
+-add try catches to every view
+
+important 
+-CORS
+    -investigate cross origin settings on s3 buck
+-handle wierd aspect ratios?? video uploads
+-responsive breakpoints makes parkour video shrink really small
+-why are there 10 videos in s3 but only 8 on the website -xref with supabase
+-make it so you can only play one video at a time
+
+END
+-foolproof all required form inputs on serverside
+-double check all routes are login only and non-logged in users can't access anything important
+-deploy to heroku and stress test
+-clean up code and comment
+-remove duplicate and test users and add new test users
+--for all routes that use parameters, make sure that random users can't access stuff they aren't supposed to
+--for all routes that use parameters, make sure that there is a proper error page if you type in a bogus parameters
+    validate parameters are correct data type
+
+Quality of Life
+-obfuscating user and video ids when they're used as url parameters
+-maybe add code to delete user old profile pics
+-change like functionalty to redirect to request.resend or whatever it is
+-maybe add profile descriptions
+-drag and drop file area - https://medium.com/creative-technology-concepts-code/creating-a-drag-drop-upload-area-bdbe891446a8
+
+DONE
+x - move video link to top of video block
+x - create individual video page
+x - style response when no videos are available for the video page
+x - make sure two accounts can't have the same username
+x - add change password functionality
+x - add individual video link to each video on leaderboard page
+x - how to render the same video template twice so the user can see liked and uploaded videos - https://stackoverflow.com/questions/9404990/how-to-pass-selected-named-arguments-to-jinja2s-include-context
+x - add user icons
+x - add generic error page and 

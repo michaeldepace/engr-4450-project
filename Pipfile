@@ -5,10 +5,10 @@ name = "pypi"
 
 [packages]
 flask = "*"
-flask-socketio = "*"
+boto3 = "*"
 python-dotenv = "*"
 supabase = "==2.0.3"
-boto3 = "*"
+flask-cors = "*"
 gunicorn = "*"
 
 [dev-packages]

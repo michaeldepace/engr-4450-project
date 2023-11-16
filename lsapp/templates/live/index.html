@@ -1,56 +1,11 @@
 {% extends 'base.html' %}
+
 {% block header %}
-Leaderboard
+Leaderboard <i class="bi bi-trophy"></i>
 {% endblock %}
+
 {% block content %}
 
-<div style="display:flex; flex-direction:row;">
-    
-    <div class="userlist">
-        <h1>Users</h1>
-        <ul id="userlist">
-            {% for key, val in users.items() %}
-            <li>
-                <div style="border: 2px solid black;">
-                    <input type="hidden" name="sid" value={{ key }}>
-                    <img alt="userIcon"/>
-                    <!-- <p>{{ val[0] }}</p> -->
-                    <p>{{ val[1] }}</p>
-                    <!-- <p>score</p> -->
-                </div>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    
-    <div class="vid-container" style="flex-grow: 1; ">
-        {% for video in videos: %}
-        <div class="vid-block">
-            <div style="border: 2px solid green; display:flex;">
-                <!-- <img alt="userIcon"/> -->
-                <p>user-{{ video['uploader_id'] }}--</p>
-                <p>likes-{{ video['num_likes'] }}--</p>
-                <p>video-{{ video['vid_id'] }}--</p>
-                {% if video['vid_id'] in likes %}
-                <form action="{{url_for('live.unlike_video', video_id=video['vid_id'])}}" method="post">
-                    <input type="hidden" value="{{ video['vid_id'] }}"/>
-                    <button type="submit">Unlike Video</button>
-                </form> 
-                {% else %}
-                <form action="{{url_for('live.like_video', video_id=video['vid_id'])}}" method="post">
-                    <input type="hidden" value="{{ video['vid_id'] }}"/>
-                    <button type="submit">Like Video</button>
-                </form>
-                {% endif %}
-            </div>
-            <video height="320" controls>
-                <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video['video_s3_path'] }}" type="video/mp4">
-            </video>
-            
-            <!-- convert this to either ajax or socketio -->
-        </div>
-        {% endfor %}
-    </div>
-</div>
+{% include './live/partials/video_block.html'%}
 
 {% endblock %}

@@ -1,12 +1,20 @@
 {% extends 'base.html' %}
+
 {% block header %}
-Video Upload
+Upload Video <i class="bi bi-file-earmark-arrow-up"></i>
 {% endblock %}
+
 {% block content %}
-<div style="width: 50%; margin: 0 auto;">
-    <form method="POST" enctype="multipart/form-data" action="" style="display: flex; flex-direction: column;">
-        <input type="file" name="file" accept=".mp4"/>
-        <input type="submit"/>
-    </form>    
+<div class="card my-3" style="width: 50%; margin: 0 auto;">
+    <h5 class="card-header">Video Upload</h5>
+    <div class="card-body">
+        <form method="POST" enctype="multipart/form-data" action="">
+            <div class="form-group">
+                <!-- <label for="file">Choose file</label> -->
+                <input class="form-control-file" type="file" name="file" accept=".mp4" max="1" required />
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">Upload</button>
+        </form>    
+    </div>
 </div>
 {% endblock %}

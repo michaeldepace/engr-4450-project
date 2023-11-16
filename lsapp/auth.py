@@ -2,6 +2,10 @@ from flask import (Blueprint, flash, g, redirect, render_template, request, sess
 from werkzeug.security import check_password_hash, generate_password_hash
 import functools
 from lsapp.db import get_db
+from werkzeug.utils import secure_filename
+from lsapp.s3 import connect_to_s3
+from datetime import datetime
+import os
 
 bp = Blueprint('auth', __name__, url_prefix='/auth') #connect this script to the html template files and http url routes
 
@@ -29,7 +33,7 @@ def load_logged_in_user():
         # ).fetchone()
 
         #this might need packaged into smthng simpler like a dictionary
-        g.user = get_db().table("users").select("usr_id, usr_login, usr_created_at").eq("usr_id", user_id).execute().data[0]
+        g.user = get_db().table("users").select("usr_id, usr_login, usr_created_at, prof_pic_s3_path").eq("usr_id", user_id).execute().data[0]
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
@@ -43,6 +47,8 @@ def register():
             error = 'Username is required.'
         elif not password:
             error = 'Password is required.'
+        elif db.table("users").select("*", count='exact').eq('usr_login', username).execute().count > 0:
+            error = "This username is taken."
 
         if error is None:
             try:
@@ -101,3 +107,79 @@ def login():
 def logout():
     session.clear()
     return redirect(url_for('index'))
+
+@bp.route('/password', methods=('GET', 'POST'))
+@login_required
+def change_password():
+    if request.method == 'POST':
+        #accept input
+        #validate and flash on error
+            #check passwords match
+            #maybe enforce password rules (do on this and original set password registration method)
+            #maybe make sure you can't reenter your old password
+        #hash and update table
+
+        confirm_password = request.form['confirm-password']
+        password = request.form['password']
+        db = get_db()
+        error = None
+
+        if not password:
+            error = 'Password is required.'
+        elif not confirm_password:
+            error = 'Password confirmation is required.'
+        elif password != confirm_password:
+            error = 'Passwords must match'
+
+        if error is None:
+            try:
+                db.table("users").update({"usr_password": generate_password_hash(password)}).eq('usr_id', g.user['usr_id']).execute()
+            except BaseException as e:
+                error = "error " + e.message
+            else:
+                return redirect(url_for("live.profile"))
+        flash(error)
+
+        return redirect(url_for('auth.change_password'))
+    else:
+        return render_template('auth/change-pswd.html')
+    
+@bp.route('/icon', methods=('GET', 'POST'))
+@login_required
+def change_user_icon():
+    if request.method == 'POST':
+        db = get_db()
+        s3 = connect_to_s3()
+        uploaded_image = request.files['file']
+        upload_filesize = uploaded_image.seek(0, os.SEEK_END)
+        uploaded_image  .seek(0, os.SEEK_SET)
+        upload_filename = secure_filename(uploaded_image.filename)
+
+        if upload_filesize > 1000000: #1000 kb limit for picture uploads
+            flash('The uploaded file is too big. 1 mb upload limit, please try again.')
+            return redirect(url_for('auth.change_user_icon'))
+
+        if upload_filename == '':
+            flash('Invalid file name. Please try again.')
+            return redirect(url_for('auth.change_user_icon'))
+
+        if '.' not in upload_filename or upload_filename.rsplit('.', 1)[1].lower() not in ('png','jpg','jpeg'):
+            flash('Incorrect file type. JPG, JPEG, and PNG files only, please try again.')
+            return redirect(url_for('auth.change_user_icon'))
+        
+        upload_ext = upload_filename.rsplit('.', 1)[1].lower()
+
+        timestamp = datetime.now().strftime("%d%m%Y%H%M%S%f")
+        user_id = g.user["usr_id"]
+        file_name = f'icon-{user_id}-{timestamp}.{upload_ext}'
+
+        try:
+            s3.meta.client.upload_fileobj(uploaded_image, 'engr-4450-fp', file_name)
+            db.table("users").update({"prof_pic_s3_path": file_name}).eq('usr_id', g.user['usr_id']).execute()
+        except Exception as e:
+            print(e) 
+            flash('We had a problem uploading your image. Please try again or contact support.')
+
+        return redirect(url_for('live.profile'))
+    else:
+        return render_template('auth/change-icon.html', user_profile_data={})

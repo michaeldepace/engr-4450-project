@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block header %}
+My Profile
+{% endblock %}
+
+{% block content %}
+
+
+<div class="card mx-auto mb-4" style="width: 60%;">
+    <div class="card-header">Profile Information</div>
+    <div class="card-body">
+        <a href="{{url_for('auth.change_user_icon')}}">Change Icon
+            {% if user_profile_data["prof_pic_s3_path"] %}
+            <img style="width: 20px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ user_profile_data["prof_pic_s3_path"] }}" alt="User profile icon"/>
+            {% else %}
+            <i class="bi bi-person-circle"></i>
+            {% endif %}
+        </a>
+        <p>Username: {{user_profile_data["usr_login"]}}</p>
+        <p>Joined: {{user_profile_data["usr_created_at"]}}</p>
+        <a href="{{ url_for('auth.change_password') }}" class="btn btn-primary">Change Password <i class="bi bi-person-fill-lock"></i></a>
+        
+    </div>
+</div>
+
+
+<div class="card mx-auto" style="width: 60%;">
+    <div class="card-header">
+        <a class="btn btn-primary" data-toggle="collapse" href="#user-uploaded-videos-collapse" role="button" aria-expanded="false" aria-controls="user-uploaded-videos-collapse">
+            My Videos <i class="bi bi-camera-video"></i>
+        </a>
+        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#user-liked-videos-collapse" aria-expanded="false" aria-controls="user-liked-videos-collapse">
+        My Likes <i class="bi bi-hand-thumbs-up"></i>
+        </button>
+    </div>
+    <div class="card-body p-0">
+        <div class="collapse container" id="user-uploaded-videos-collapse">
+            <!-- <div class="card mx-4 my-2">
+                <div class="card-header">My Uploaded Videos</div>
+                <div class="card-body">
+                    
+                </div>
+            </div>   -->
+            {% include './live/partials/video_block.html'%}  
+        </div>
+        <div class="collapse" id="user-liked-videos-collapse">
+            {% with videos=liked_vids %}
+                {% include './live/partials/video_block.html'%}
+            {% endwith %}
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+{% endblock %}
