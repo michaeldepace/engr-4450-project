@@ -60,6 +60,10 @@ def submit():
             flash('The uploaded file is too big. 30 mb upload limit, please try again.')
             return redirect(url_for('live.submit'))
 
+        if upload_filesize == 0:
+            flash('The uploaded file is not valid. Please try again.')
+            return redirect(url_for('live.submit'))
+
         # make sure the filename isn't empty
         if upload_filename == '':
             flash('Invalid file name. Please try again.')
@@ -75,7 +79,7 @@ def submit():
         file_name = f'vid-{user_id}-{timestamp}.mp4'
 
         try:
-            s3.meta.client.upload_fileobj(uploaded_video, 'engr-4450-fp', file_name) # push the file data to the s3 bucket
+            s3.meta.client.upload_fileobj(uploaded_video, 'engr-4450-fp', file_name, ExtraArgs={"ContentType": "video/mp4"}) # push the file data to the s3 bucket
             db.table("submissions").insert({"uploader_id": user_id, "video_s3_path": file_name}).execute() # log uploaded video in submissions db table
         except Exception as e:
             flash('We had a problem uploading your video. Please try again or contact support.')
@@ -83,42 +87,6 @@ def submit():
         return redirect(url_for('live.submit'))
     else:
         return render_template('live/submit.html')
-
-
-@bp.route('/profile')
-@login_required
-def profile():
-    db = get_db()
-    vids = db.table("video_data").select("*").eq('uploader_id', g.user["usr_id"]).execute().data
-    vid_id_list = []
-
-    for record in vids:
-        # Put this list so that I can check what comments need printed two steps down
-        vid_id_list.append(record['vid_id'])
-
-    like_data = db.table("video_likes").select("*").eq('user_id', g.user["usr_id"]).execute().data
-    liked_video_ids = []
-    for item in like_data:
-        liked_video_ids.append(item['vid_id'])
-
-    comment_data = db.table("comment_data").select("*").in_("video_id",vid_id_list).execute().data
-    comment_dictionary = {}
-    for record in vids:
-        vid_id = record["vid_id"]
-        comment_dictionary[vid_id] = []
-
-    for record in comment_data:
-        # Run into a KeyError as it tries to render comments that do not exist, which is why vid_id_list exists
-        comment_vid_id = record["video_id"]
-        comment_dictionary[comment_vid_id].append(record)
-
-    user_profile_data = db.table("users").select("*").eq('usr_id', g.user['usr_id']).execute().data[0]
-    user_profile_data["usr_created_at"] = str(user_profile_data["usr_created_at"])[:10]#.strftime('%m/%d/%Y, %H:%M:%S')
-
-    #this query only grabs videos from the submissions table that have been liked by the current user
-    liked_video_data = db.table("video_data").select('*, video_likes(user_id)').eq('video_likes.user_id', g.user["usr_id"]).not_.is_('video_likes', 'null').execute().data 
-
-    return render_template('live/profile.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary, user_profile_data=user_profile_data, liked_vids=liked_video_data)
 
 @bp.route('/video/<vid_id>', methods=["GET"]) #view and individual video on its own page
 @login_required
@@ -142,7 +110,7 @@ def view_video(vid_id):
         comment_vid_id = record["video_id"]
         comment_dictionary[comment_vid_id].append(record)
 
-    return render_template('live/video.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary)
+    return render_template('live/video.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary, hidelink=True)
 
 @bp.route('/like/<video_id>', methods=["POST"])
 @login_required
@@ -173,3 +141,38 @@ def submit_video_comment():
     comment_text = request.form['comment_text']
     db.table("comments").insert({"user_id": user_id, "video_id": vid_id, "comment_text":comment_text }).execute()
     return redirect(request.referrer)
+
+@bp.route('/profiles/<user_id>', methods=["GET"])
+@login_required
+def view_profile(user_id):
+    db = get_db()
+    uploaded_vids = db.table("video_data").select("*").eq('uploader_id', user_id).execute().data
+    vid_id_list = []
+
+    for record in uploaded_vids:
+        # Put this list so that I can check what comments need printed two steps down
+        vid_id_list.append(record['vid_id'])
+
+    like_data = db.table("video_likes").select("*").eq('user_id', user_id).execute().data
+    liked_video_ids = []
+    for item in like_data:
+        liked_video_ids.append(item['vid_id'])
+
+    comment_data = db.table("comment_data").select("*").in_("video_id",vid_id_list).execute().data
+    comment_dictionary = {}
+    for record in uploaded_vids:
+        vid_id = record["vid_id"]
+        comment_dictionary[vid_id] = []
+
+    for record in comment_data:
+        # Run into a KeyError as it tries to render comments that do not exist, which is why vid_id_list exists
+        comment_vid_id = record["video_id"]
+        comment_dictionary[comment_vid_id].append(record)
+
+    user_profile_data = db.table("users").select("*").eq('usr_id', user_id).execute().data[0]
+    user_profile_data["usr_created_at"] = str(user_profile_data["usr_created_at"])[:10]#.strftime('%m/%d/%Y, %H:%M:%S')
+
+    #this query only grabs videos from the submissions table that have been liked by the current user
+    liked_video_data = db.table("video_data").select('*, video_likes(user_id)').eq('video_likes.user_id', user_id).not_.is_('video_likes', 'null').execute().data 
+
+    return render_template('live/profiles.html', videos=uploaded_vids, likes=liked_video_ids, comments=comment_dictionary, user_profile_data=user_profile_data, liked_vids=liked_video_data)

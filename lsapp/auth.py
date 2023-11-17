@@ -6,8 +6,9 @@ from werkzeug.utils import secure_filename
 from lsapp.s3 import connect_to_s3
 from datetime import datetime
 import os
+import re
 
-bp = Blueprint('auth', __name__, url_prefix='/auth') #connect this script to the html template files and http url routes
+bp = Blueprint('auth', __name__) #connect this script to the html template files and http url routes
 
 #create a wrapper for route functions that require you to be logged in before accessing
 def login_required(view):
@@ -42,6 +43,8 @@ def register():
             error = 'Password is required.'
         elif db.table("users").select("*", count='exact').eq('usr_login', username).execute().count > 0:
             error = "This username is taken."
+        elif checkPassword(password) != "":
+            error = checkPassword(password)
 
         if error is None:
             try:
@@ -90,13 +93,6 @@ def logout():
 @login_required
 def change_password():
     if request.method == 'POST':
-        #accept input
-        #validate and flash on error
-            #check passwords match
-            #maybe enforce password rules (do on this and original set password registration method)
-            #maybe make sure you can't reenter your old password
-        #hash and update table
-
         confirm_password = request.form['confirm-password']
         password = request.form['password']
         db = get_db()
@@ -108,6 +104,8 @@ def change_password():
             error = 'Password confirmation is required.'
         elif password != confirm_password:
             error = 'Passwords must match'
+        elif checkPassword(password) != "":
+            error = checkPassword(password)
 
         if error is None:
             try:
@@ -115,13 +113,29 @@ def change_password():
             except BaseException as e:
                 error = "error " + e.message
             else:
-                return redirect(url_for("live.profile"))
+                return redirect(url_for("auth.profile"))
         flash(error)
 
         return redirect(url_for('auth.change_password'))
     else:
         return render_template('auth/change-pswd.html')
+
+# Checks if an inputted password follows a set of password rules (length, numbers, special characters)
+def checkPassword(pwd):
+    message = ""
     
+    if len(pwd) < 12: # Check if password is at least 12 characters
+        message = "Password must be at least 12 characters."
+    elif re.search(r"\d", pwd) is None: # Check if it contains at least one digit
+        message = "Password must contain at least 1 digit."
+    elif re.search(r"[a-zA-Z]", pwd) is None: # Check if it contains at least 1 letter
+        message = "Password must contain at least 1 letter."
+    elif re.search(r"[^a-zA-Z0-9_]", pwd) is None: # Check if it contains at least 1 special character
+        message = "Password must contain at least one special character (@, !, ?, *, &, $, #, etc.)"
+
+    return message
+
+
 @bp.route('/icon', methods=('GET', 'POST'))
 @login_required
 def change_user_icon():
@@ -135,6 +149,10 @@ def change_user_icon():
 
         if upload_filesize > 2000000: #2000 kb limit for picture uploads
             flash('The uploaded file is too big. 2 mb upload limit, please try again.')
+            return redirect(url_for('auth.change_user_icon'))
+        
+        if upload_filesize == 0:
+            flash('The uploaded file is not valid. Please try again.')
             return redirect(url_for('auth.change_user_icon'))
 
         if upload_filename == '':
@@ -158,6 +176,41 @@ def change_user_icon():
             print(e) 
             flash('We had a problem uploading your image. Please try again or contact support.')
 
-        return redirect(url_for('live.profile'))
+        return redirect(url_for('auth.profile'))
     else:
         return render_template('auth/change-icon.html', user_profile_data={})
+    
+@bp.route('/myprofile')
+@login_required
+def profile():
+    db = get_db()
+    vids = db.table("video_data").select("*").eq('uploader_id', g.user["usr_id"]).execute().data
+    vid_id_list = []
+
+    for record in vids:
+        # Put this list so that I can check what comments need printed two steps down
+        vid_id_list.append(record['vid_id'])
+
+    like_data = db.table("video_likes").select("*").eq('user_id', g.user["usr_id"]).execute().data
+    liked_video_ids = []
+    for item in like_data:
+        liked_video_ids.append(item['vid_id'])
+
+    comment_data = db.table("comment_data").select("*").in_("video_id",vid_id_list).execute().data
+    comment_dictionary = {}
+    for record in vids:
+        vid_id = record["vid_id"]
+        comment_dictionary[vid_id] = []
+
+    for record in comment_data:
+        # Run into a KeyError as it tries to render comments that do not exist, which is why vid_id_list exists
+        comment_vid_id = record["video_id"]
+        comment_dictionary[comment_vid_id].append(record)
+
+    user_profile_data = db.table("users").select("*").eq('usr_id', g.user['usr_id']).execute().data[0]
+    user_profile_data["usr_created_at"] = str(user_profile_data["usr_created_at"])[:10]#.strftime('%m/%d/%Y, %H:%M:%S')
+
+    #this query only grabs videos from the submissions table that have been liked by the current user
+    liked_video_data = db.table("video_data").select('*, video_likes(user_id)').eq('video_likes.user_id', g.user["usr_id"]).not_.is_('video_likes', 'null').execute().data 
+
+    return render_template('auth/myprofile.html', videos=vids, likes=liked_video_ids, comments=comment_dictionary, user_profile_data=user_profile_data, liked_vids=liked_video_data)
