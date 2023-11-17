@@ -44,7 +44,7 @@
                 {% if g.user %}
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('live.profile') }}"> 
+                        <a class="nav-link" href="{{ url_for('auth.profile') }}"> 
                             <div>
                                 {% if g.user['prof_pic_s3_path']: %}
                                     <img style="width: 20px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{g.user['prof_pic_s3_path']}}" alt="User profile icon"/>

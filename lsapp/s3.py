@@ -2,8 +2,7 @@ from flask import current_app, g
 from werkzeug.utils import secure_filename
 import boto3
 
-ALLOWED_EXTENSIONS = {'mp4'}
-
+# establishes connection to s3 that route/view methods can use to upload files
 def connect_to_s3():
     s3 = boto3.resource(
         "s3",
@@ -12,28 +11,31 @@ def connect_to_s3():
     )
     return s3
 
+
+#ALLOWED_EXTENSIONS = {'mp4'}
+
 # def allowed_file(filename):
 #     return '.' in filename and \
 #         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def upload_file_to_s3(file, bucket_name, acl="public-read"):
-    """
-    Docs: http://boto3.readthedocs.io/en/latest/guide/s3.html
-    """
-    try:
-        s3.upload_fileobj(
-            file,
-            bucket_name,
-            file.filename,
-            ExtraArgs={
-                "ACL": acl,
-                "ContentType": "video/mp4"
-            }
-        )
-    except Exception as e:
-        return e
-    return "{}{}".format(current_app.config["S3_LOCATION"], file.filename)
+# def upload_file_to_s3(file, bucket_name, acl="public-read"):
+#     """
+#     Docs: http://boto3.readthedocs.io/en/latest/guide/s3.html
+#     """
+#     try:
+#         s3.upload_fileobj(
+#             file,
+#             bucket_name,
+#             file.filename,
+#             ExtraArgs={
+#                 "ACL": acl,
+#                 "ContentType": "video/mp4"
+#             }
+#         )
+#     except Exception as e:
+#         return e
+#     return "{}{}".format(current_app.config["S3_LOCATION"], file.filename)
 
 
 # @app.route('/', methods=['GET', 'POST'])

@@ -1,6 +1,6 @@
-#!/bin/env python
 from lsapp import create_app
 
-app = create_app()
+# trigger application start from deployment server
+app = create_app() 
 if __name__ == '__main__':
-    app.run() #production code
+    app.run() # run application from __init__.py
