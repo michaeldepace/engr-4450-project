@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 
 {% block header %}
-My Profile
+{{user_profile_data["usr_login"]}} {% if user_profile_data["prof_pic_s3_path"] %}
+<img style="width: 40px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ user_profile_data["prof_pic_s3_path"] }}" alt="User profile icon"/>
+{% else %}
+<i class="bi bi-person-circle"></i>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -12,11 +16,7 @@ My Profile
     <div class="card-body">
         <p>Username: {{user_profile_data["usr_login"]}}</p>
         <p>Joined: {{user_profile_data["usr_created_at"]}}</p>
-        {% if user_profile_data["prof_pic_s3_path"] %}
-        <img style="width: 20px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ user_profile_data["prof_pic_s3_path"] }}" alt="User profile icon"/>
-        {% else %}
-        <i class="bi bi-person-circle"></i>
-        {% endif %}
+        
         <!-- <a class="btn btn-primary" href="{{url_for('auth.change_user_icon')}}">Change Icon
             
         </a> -->

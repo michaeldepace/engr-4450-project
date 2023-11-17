@@ -1,4 +1,5 @@
 important 
+-make sure the correct videos are liked when viewing someone elses profile
 -CORS
     -investigate cross origin settings on s3 buck
 

@@ -153,7 +153,7 @@ def view_profile(user_id):
         # Put this list so that I can check what comments need printed two steps down
         vid_id_list.append(record['vid_id'])
 
-    like_data = db.table("video_likes").select("*").eq('user_id', user_id).execute().data
+    like_data = db.table("video_likes").select("*").eq('user_id', g.user['usr_id']).execute().data
     liked_video_ids = []
     for item in like_data:
         liked_video_ids.append(item['vid_id'])
