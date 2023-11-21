@@ -5,14 +5,14 @@
         <div class="card my-3" style="width: 60%; margin: 0 auto; --max-height: 35rem;">
             <div class="card-body">
                 <div class="row">
-                    <div class="col">
+                    <div class="col" style="min-width: 40%;">
                         <div class="" style="display: block; object-fit:contain;">  <!-- d-flex justify-content-center -->
                             <video class="" style="width: 100% !important; height: auto !important; object-fit:contain;" controls>
                                 <source src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video['video_s3_path'] }}" type="video/mp4">
                             </video>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col" style="--max-width: 50%; ">
                         <div class="container">
                             <div class="row mb-2">
                                 <div class="col-3 mx-0 px-0">
@@ -93,31 +93,33 @@
                                 </div>
                                 <div class="col mx-0 px-0">
                                     <div class="d-flex flex-row-reverse my-1">
-                                        <a href="{{ url_for('live.view_profile', user_id=video['uploader_id']) }}" style="color: black; text-decoration:none;">
+                                        {% if not hidelink %}
+                                        <!-- <div class="col-2 py-auto mx-0 mr-0 pr-0 "> -->
+                                            <!-- <div class="d-flex flex-row-reverse"> -->
+                                                <a title="Expand video" href="{{url_for('live.view_video', vid_id=video['vid_id'])}}" class="btn btn-light pt-1 ml-2"><i class="bi bi-box-arrow-up-right"></i></a>
+                                            <!-- </div> -->
+                                        <!-- </div> -->
+                                        {% endif %}
+                                        <a href="{{ url_for('live.view_profile', user_id=video['uploader_id']) }}" style="color: black; text-decoration:none;" class="d-flex align-items-center">
                                         {% if video['prof_pic_s3_path'] %}
                                             <h5 class="mb-0">
                                                 <img style="width: 20px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ video["prof_pic_s3_path"] }}" alt="User profile icon"/>
-                                                 {{video["usr_login"]}}</h5>
+                                                 <span class="d-none d-md-inline">{{video["usr_login"][:7] }}{% if video["usr_login"]|length > 6 %}...{%endif%}</span></h5>
                                         {% else %}
-                                            <h5 class="mb-0"><i class="bi bi-person-circle"></i> {{video["usr_login"]}}</h5>
+                                            <h5 class="mb-0"><i class="bi bi-person-circle"></i> <span class="d-none d-md-inline">{{video["usr_login"][:7]}}{% if video["usr_login"]|length > 6 %}...{%endif%}</span></h5>
                                         {% endif %}
                                         </a>
+                                        
                                     </div>
                                 </div>
-                                {% if not hidelink %}
-                                <div class="col-2 py-auto mx-0 mr-0 pr-0 ">
-                                    <div class="d-flex flex-row-reverse">
-                                        <a title="Expand video" href="{{url_for('live.view_video', vid_id=video['vid_id'])}}" class="btn btn-light pt-1"><i class="bi bi-box-arrow-up-right"></i></a>
-                                    </div>
-                                </div>
-                                {% endif %}
+                                
                             </div>
                             
                         </div>
                         
                         
 
-                        <div class="card">
+                        <div class="card" style="">
                             <div class="card-header py-1">
                               Comments
                             </div>
@@ -242,9 +244,9 @@
                                         <h5 class="">
                                             <!-- <img src="video['prof_pic_s3_path']" alt="profile pic" /> -->
                                             <img style="width: 20px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{video['prof_pic_s3_path']}}" alt="User profile icon"/>
-                                             {{video["usr_login"]}}</h5>
+                                            <span class="d-none d-md-inline">{{video["usr_login"][:7]}}{% if video["usr_login"]|length > 6 %}...{%endif%}</span></h5>
                                     {% else %}
-                                        <h5 class="mb-0"><i class="bi bi-person-circle"></i> {{video["usr_login"]}}</h5>
+                                        <h5 class="mb-0"><i class="bi bi-person-circle"></i> <span class="d-none d-md-inline">{{video["usr_login"][:7]}}{% if video["usr_login"]|length > 6 %}...{%endif%}</span></h5>
                                     {% endif %}
                                     </a>
                                 </div>
