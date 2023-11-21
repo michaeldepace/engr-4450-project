@@ -14,6 +14,7 @@ bp = Blueprint('auth', __name__) #connect this script to the html template files
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
+        print('pbkdf2:sha256:600000$BWbREOpWz3MMxnJD$f4e8d25209fa8691c404148dc15dbe8b22a208c7058d5230c46a2afafd7031e0')
         if g.user is None: # checks if the user isn't logged in
             return redirect(url_for('auth.login')) #redirect them to the login page so they can log in
         return view(**kwargs) #allows the user to go ahead and access their secured page
@@ -54,6 +55,11 @@ def register():
             else:
                 return redirect(url_for("auth.login"))
         flash(error)
+
+        # session["reg_usr"] = username
+        # session["reg_pwd"] = password
+        g.reg_usr = username
+        g.reg_pwd = password
     return render_template('auth/register.html')
 
 @bp.route('/login', methods=('GET', 'POST'))
@@ -91,7 +97,7 @@ def logout():
 
 @bp.route('/password', methods=('GET', 'POST'))
 @login_required
-def change_password():
+def change_password():#password="", confirm_password=""):
     if request.method == 'POST':
         confirm_password = request.form['confirm-password']
         password = request.form['password']
@@ -116,9 +122,12 @@ def change_password():
                 return redirect(url_for("auth.profile"))
         flash(error)
 
-        return redirect(url_for('auth.change_password'))
+        g.c_pwd = password
+        g.c_cnf_pwd = confirm_password
+
+        return redirect(url_for('auth.change_password'))#, password=password, confirm_password=confirm_password))
     else:
-        return render_template('auth/change-pswd.html')
+        return render_template('auth/change-pswd.html')#, password=password, confirm_password=confirm_password)
 
 # Checks if an inputted password follows a set of password rules (length, numbers, special characters)
 def checkPassword(pwd):
@@ -130,8 +139,10 @@ def checkPassword(pwd):
         message = "Password must contain at least 1 digit."
     elif re.search(r"[a-zA-Z]", pwd) is None: # Check if it contains at least 1 letter
         message = "Password must contain at least 1 letter."
-    elif re.search(r"[^a-zA-Z0-9_]", pwd) is None: # Check if it contains at least 1 special character
+    elif re.compile('[@_!#$%^&*()<>?/\|}{~:]').search(pwd) is None:#re.search(r"[^a-zA-Z0-9_]", pwd) is None: # Check if it contains at least 1 special character
         message = "Password must contain at least one special character (@, !, ?, *, &, $, #, etc.)"
+
+    print("password: ", pwd)
 
     return message
 

@@ -10,11 +10,11 @@ Change Password <i class="bi bi-person-fill-lock"></i>
     <form method="post">
         <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" required>
+            <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password" value="{{g.c_pwd}}" required>
         </div>
         <div class="form-group">
             <label for="confirm-password">Confirm Password</label>
-            <input type="password" name="confirm-password" id="confirm-password" class="form-control" aria-describedby="usernameHelp" placeholder="Confirm Password" required>
+            <input type="password" name="confirm-password" id="confirm-password" class="form-control" aria-describedby="usernameHelp" placeholder="Confirm Password" value="{{g.c_cnf_pwd}}" required>
         </div>
       <button type="submit" class="btn btn-primary btn-block">Change Password</button>
     </form>

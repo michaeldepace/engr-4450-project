@@ -1,14 +1,10 @@
-important 
+test register and change password
+check password rules actually work
+
+important
 -make sure the correct videos are liked when viewing someone elses profile
 -CORS
     -investigate cross origin settings on s3 buck
-
--make mobile respnosive 
-    -responsive breakpoints makes parkour video shrink really small
-    -handle wierd aspect ratios?? video uploads
-    -fix wierd overlaps in UI
--why are there 10 videos in s3 but only 8 on the website -xref with supabase
-
 
 END
 -add try catches to every view
@@ -31,6 +27,12 @@ Quality of Life
 -drag and drop file area - https://medium.com/creative-technology-concepts-code/creating-a-drag-drop-upload-area-bdbe891446a8
 -make it so you can only play one video at a time
 -force file size limit on local
+-maybe link profiles in comments
+-make mobile respnosive 
+    -responsive breakpoints makes parkour video shrink really small
+    -handle wierd aspect ratios?? video uploads
+    -fix wierd overlaps in UI
+
 
 DONE
 x - move video link to top of video block
@@ -48,3 +50,4 @@ x - make sure you can't upload a zero byte video
 x - add content type on file upload
 x - hide video link on individual video view page (you can just keep clicking it in a nested navigation to the video)
 x - link to user profiles potentially and make profile page (change profile template to work for any user) have a profiles page in live and a myprofile page in auth
+x - why are there 10 videos in s3 but only 8 on the website -xref with supabase
