@@ -146,7 +146,6 @@ def submit_video_comment():
 @login_required
 def view_profile(user_id):
     db = get_db()
-    #print("-------------------", g.user['usr_id'], user_id)
     if int(g.user['usr_id']) == int(user_id):
         
         return redirect(url_for('auth.profile'))

@@ -29,45 +29,49 @@ def load_logged_in_user():
     else: #if there is a user id, then set the grab the user's account data for this request cycle
         g.user = get_db().table("users").select("usr_id, usr_login, usr_created_at, prof_pic_s3_path").eq("usr_id", user_id).execute().data[0] # grabs and caches user data from supabase
 
-
+# function that runs for the <domain>/register route
+# responsible for serving a register account form page to the user and accepting submitted input from that form
+# handles validating registration account credentials and creating user account in database
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
+    if request.method == 'POST': #application logic to handle user submitting register form
+        username = request.form['username'] # grab username from submitted form data
+        password = request.form['password'] # grab password from submitted form data
+        db = get_db() #establish a connection to supabase
         error = None
 
+        #series of checks to validate submitted username and password fields  
         if not username:
             error = 'Username is required.'
         elif not password:
             error = 'Password is required.'
-        elif db.table("users").select("*", count='exact').eq('usr_login', username).execute().count > 0:
+        elif db.table("users").select("*", count='exact').eq('usr_login', username).execute().count > 0: #checks if the username exists already in the database
             error = "This username is taken."
         elif checkPassword(password) != "":
-            error = checkPassword(password)
+            error = checkPassword(password) #validate password using separate password validation function
 
-        if error is None:
+        if error is None: # if there are no problems with the username and password, then the user is registered and their account information is stored in the database
             try:
+                # store the user account information in the database
                 db.table("users").insert({"usr_login": username, "usr_password": generate_password_hash(password)}).execute()
             except BaseException as e:
                 error = "error " + e.message
             else:
-                return redirect(url_for("auth.login"))
-        flash(error)
+                return redirect(url_for("auth.login")) #redirect the user to log in 
+        flash(error) # display the error message to the user
 
-        # session["reg_usr"] = username
-        # session["reg_pwd"] = password
-        g.reg_usr = username
-        g.reg_pwd = password
-    return render_template('auth/register.html')
+        g.reg_usr = username #store username attempt for next request cycle
+        g.reg_pwd = password #store password attempt for next request cycle
+    return render_template('auth/register.html') #redirect to register page so the user can try again to register 
 
+# function that runs for the <domain>/register route
+# responsible for serving a register account form page to the user and accepting submitted input from that form
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        db = get_db()
+        username = request.form['username']# grab username from submitted form data
+        password = request.form['password']# grab password from submitted form data
+        db = get_db() #establish a connection to supabase
         error = None
         user = None
         usr_data = db.table("users").select("*").eq("usr_login", username).execute().data
@@ -97,7 +101,7 @@ def logout():
 
 @bp.route('/password', methods=('GET', 'POST'))
 @login_required
-def change_password():#password="", confirm_password=""):
+def change_password():
     if request.method == 'POST':
         confirm_password = request.form['confirm-password']
         password = request.form['password']
@@ -220,7 +224,7 @@ def profile():
         comment_dictionary[comment_vid_id].append(record)
 
     user_profile_data = db.table("users").select("*").eq('usr_id', g.user['usr_id']).execute().data[0]
-    user_profile_data["usr_created_at"] = str(user_profile_data["usr_created_at"])[:10]#.strftime('%m/%d/%Y, %H:%M:%S')
+    user_profile_data["usr_created_at"] = str(user_profile_data["usr_created_at"])[:10]
 
     #this query only grabs videos from the submissions table that have been liked by the current user
     liked_video_data = db.table("video_data").select('*, video_likes(user_id)').eq('video_likes.user_id', g.user["usr_id"]).not_.is_('video_likes', 'null').execute().data 

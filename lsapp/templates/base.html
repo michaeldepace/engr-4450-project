@@ -46,7 +46,6 @@
                             <div>
                                 {% if g.user['prof_pic_s3_path']: %}
                                     <img style="width: 20px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{g.user['prof_pic_s3_path']}}" alt="User profile icon"/>
-                                    <!-- <img class="account-icon-img" src="{{g.user['prof_pic_s3_path']}}" alt="user icon" />                                 -->
                                 {% else %}
                                     <i class="bi bi-person-circle"></i>
                                 {% endif %}
