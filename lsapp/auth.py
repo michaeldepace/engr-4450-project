@@ -8,19 +8,18 @@ from datetime import datetime
 import os
 import re
 
-bp = Blueprint('auth', __name__) #connect this script to the html template files and http url routes
+bp = Blueprint('auth', __name__) # register/connect this script with the html template files and http url routes
 
-#create a wrapper for route functions that require you to be logged in before accessing
+# create a wrapper for route functions that require you to be logged in before accessing the route in question
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        print('pbkdf2:sha256:600000$BWbREOpWz3MMxnJD$f4e8d25209fa8691c404148dc15dbe8b22a208c7058d5230c46a2afafd7031e0')
         if g.user is None: # checks if the user isn't logged in
             return redirect(url_for('auth.login')) #redirect them to the login page so they can log in
         return view(**kwargs) #allows the user to go ahead and access their secured page
     return wrapped_view
 
-#register a function that runs before every page request to make current user info accessible across application
+# register a function that runs before every page request to make current user info accessible across application
 @bp.before_app_request # this just makes sure that the user info is available before each request/page load so it is seamlessly available at all times
 def load_logged_in_user():
     user_id = session.get('user_id') #checks if user id is stored in current session data
@@ -28,7 +27,8 @@ def load_logged_in_user():
     if user_id is None: #if it isn't then there is no user logged in
         g.user = None
     else: #if there is a user id, then set the grab the user's account data for this request cycle
-        g.user = get_db().table("users").select("usr_id, usr_login, usr_created_at, prof_pic_s3_path").eq("usr_id", user_id).execute().data[0]
+        g.user = get_db().table("users").select("usr_id, usr_login, usr_created_at, prof_pic_s3_path").eq("usr_id", user_id).execute().data[0] # grabs and caches user data from supabase
+
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
@@ -92,8 +92,8 @@ def login():
 
 @bp.route('/logout') # clears the session data (including login cookie), and redirects to the home page when the user logs out
 def logout():
-    session.clear()
-    return redirect(url_for('index'))
+    session.clear() # clears session cookie of any login/auth confirmation 
+    return redirect(url_for('index')) # redirects user to home page (leaderboard)
 
 @bp.route('/password', methods=('GET', 'POST'))
 @login_required
@@ -125,9 +125,9 @@ def change_password():#password="", confirm_password=""):
         g.c_pwd = password
         g.c_cnf_pwd = confirm_password
 
-        return redirect(url_for('auth.change_password'))#, password=password, confirm_password=confirm_password))
+        return redirect(url_for('auth.change_password'))
     else:
-        return render_template('auth/change-pswd.html')#, password=password, confirm_password=confirm_password)
+        return render_template('auth/change-pswd.html')
 
 # Checks if an inputted password follows a set of password rules (length, numbers, special characters)
 def checkPassword(pwd):
@@ -150,8 +150,8 @@ def checkPassword(pwd):
 @bp.route('/icon', methods=('GET', 'POST'))
 @login_required
 def change_user_icon():
+    db = get_db()
     if request.method == 'POST':
-        db = get_db()
         s3 = connect_to_s3()
         uploaded_image = request.files['file']
         upload_filesize = uploaded_image.seek(0, os.SEEK_END)
@@ -189,7 +189,8 @@ def change_user_icon():
 
         return redirect(url_for('auth.profile'))
     else:
-        return render_template('auth/change-icon.html', user_profile_data={})
+        user_prof_data = db.table("users").select("*").eq('usr_id', g.user['usr_id']).execute().data[0]
+        return render_template('auth/change-icon.html', user_profile_data=user_prof_data)
     
 @bp.route('/myprofile')
 @login_required

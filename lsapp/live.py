@@ -7,7 +7,7 @@ from lsapp.auth import login_required
 from lsapp.db import get_db
 from lsapp.s3 import connect_to_s3
 
-bp = Blueprint('live', __name__)
+bp = Blueprint('live', __name__) # register/connect this script with the html template files and http url routes
 
 @bp.route('/')
 @login_required
@@ -146,6 +146,11 @@ def submit_video_comment():
 @login_required
 def view_profile(user_id):
     db = get_db()
+    #print("-------------------", g.user['usr_id'], user_id)
+    if int(g.user['usr_id']) == int(user_id):
+        
+        return redirect(url_for('auth.profile'))
+
     uploaded_vids = db.table("video_data").select("*").eq('uploader_id', user_id).execute().data
     vid_id_list = []
 

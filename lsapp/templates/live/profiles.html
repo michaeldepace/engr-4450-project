@@ -15,21 +15,13 @@
     <div class="card-header"><h4 class="m-0">Profile Information</h4></div>
     <div class="card-body">
         <p>Username: {{user_profile_data["usr_login"]}}</p>
-        <p>Joined: {{user_profile_data["usr_created_at"]}}</p>
-        
-        <!-- <a class="btn btn-primary" href="{{url_for('auth.change_user_icon')}}">Change Icon
-            
-        </a> -->
-        <!-- <a href="{{ url_for('auth.change_password') }}" class="btn btn-primary">Change Password <i class="bi bi-person-fill-lock"></i></a> -->
-        
+        <p>Joined: {{user_profile_data["usr_created_at"]}}</p>        
     </div>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function(){
     $('#btn-toggle-myvids').click(function(e){
-        //$('user-uploaded-videos-collapse').toggleClass('show');
-        //$('user-liked-videos-collapse').toggleClass('show');
         $('#btn-toggle-myvids').toggleClass('btn-outline-primary');
         $('#btn-toggle-myvids').toggleClass('btn-primary');
         $('#btn-toggle-mylikes').toggleClass('btn-outline-primary');
@@ -49,12 +41,8 @@ $(document).ready(function(){
         }else{
             $('#btn-toggle-mylikes').prop('disabled', true);
         }
-        //toggle disabled
-        //console.log('test');
     });
     $('#btn-toggle-mylikes').click(function(e){
-        //$('user-uploaded-videos-collapse').toggleClass('show');
-        //$('user-liked-videos-collapse').toggleClass('show');
         $('#btn-toggle-myvids').toggleClass('btn-outline-primary');
         $('#btn-toggle-myvids').toggleClass('btn-primary');
         $('#btn-toggle-mylikes').toggleClass('btn-outline-primary');
@@ -74,19 +62,12 @@ $(document).ready(function(){
         }else{
             $('#btn-toggle-mylikes').prop('disabled', true);
         }
-        //console.log('test');
     });
 });
 </script>
 
 <div class="card mx-auto" style="width: 60%;">
     <div class="card-header">
-        <!-- <a id="btn-toggle-myvids" class="btn btn-primary" data-toggle="collapse" href="#user-uploaded-videos-collapse" role="button" aria-expanded="false" aria-controls="user-uploaded-videos-collapse">
-            My Videos <i class="bi bi-camera-video"></i>
-        </a>
-        <button id="btn-toggle-mylikes" class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#user-liked-videos-collapse" aria-expanded="false" aria-controls="user-liked-videos-collapse">
-        My Likes <i class="bi bi-hand-thumbs-up"></i>
-        </button> -->
         <button id="btn-toggle-myvids" class="btn btn-primary" type="button" disabled>
             Videos <i class="bi bi-camera-video"></i>
         </button>
@@ -105,13 +86,5 @@ $(document).ready(function(){
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-
 
 {% endblock %}

@@ -1,5 +1,6 @@
 test register and change password
 check password rules actually work
+fix icon spacing on leaderboard
 
 important
 -make sure the correct videos are liked when viewing someone elses profile
@@ -7,7 +8,6 @@ important
     -investigate cross origin settings on s3 buck
 
 END
--add try catches to every view
 -foolproof all required form inputs on serverside
 -double check all routes are login only and non-logged in users can't access anything important
 -deploy to heroku and stress test
@@ -20,7 +20,7 @@ END
 -check with different browsers
 
 Quality of Life
--obfuscating user and video ids when they're used as url parameters
+    -obfuscating user and video ids when they're used as url parameters
 -maybe add code to delete user old profile pics
 -change like functionalty to redirect to request.resend or whatever it is
 -maybe add profile descriptions
@@ -51,3 +51,4 @@ x - add content type on file upload
 x - hide video link on individual video view page (you can just keep clicking it in a nested navigation to the video)
 x - link to user profiles potentially and make profile page (change profile template to work for any user) have a profiles page in live and a myprofile page in auth
 x - why are there 10 videos in s3 but only 8 on the website -xref with supabase
+x - add try catches to every view (handled generall errors)

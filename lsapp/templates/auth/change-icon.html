@@ -3,9 +3,9 @@
 {% block header %}
 Change Account Icon
 {% if user_profile_data["prof_pic_s3_path"] %}
-  <img alt="User profile icon"/>
+<img style="width: 30px; object-fit:cover; aspect-ratio: 1/1;  border-radius: 100%;" src="https://engr-4450-fp.s3.us-east-2.amazonaws.com/{{ user_profile_data["prof_pic_s3_path"] }}" alt="User profile icon"/>
 {% else %}
-  <i class="bi bi-person-circle"></i>
+<i class="bi bi-person-circle"></i>
 {% endif %}
 {% endblock %}
 
@@ -17,7 +17,6 @@ Change Account Icon
       <div class="form-group">
         <input class="form-control-file" type="file" name="file" accept=".jpg,.png,.jpeg" max="1" required />
       </div>
-      add preview
       <button class="btn btn-primary btn-block" type="submit">Upload</button>
     </form>
   </div>
