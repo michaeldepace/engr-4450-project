@@ -10,3 +10,4 @@ def connect_to_s3():
         aws_secret_access_key=current_app.config['AWS_SECRET_KEY']
     )
     return s3
+

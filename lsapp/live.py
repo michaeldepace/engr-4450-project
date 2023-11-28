@@ -234,4 +234,5 @@ def view_profile(user_id):
     #this query only grabs videos from the submissions table that have been liked by the current user
     liked_video_data = db.table("video_data").select('*, video_likes(user_id)').eq('video_likes.user_id', user_id).not_.is_('video_likes', 'null').execute().data 
 
-    return render_template('live/profiles.html', videos=uploaded_vids, likes=liked_video_ids, comments=comment_dictionary, user_profile_data=user_profile_data, liked_vids=liked_video_data)
+    return render_template('live/profiles.html', videos=uploaded_vids, 
+        likes=liked_video_ids, comments=comment_dictionary, user_profile_data=user_profile_data, liked_vids=liked_video_data)
